@@ -55,3 +55,4 @@ group :test do
   gem "capybara"
   gem "selenium-webdriver"
 end
+gem "acts_as_tenant", "~> 0.3.9"

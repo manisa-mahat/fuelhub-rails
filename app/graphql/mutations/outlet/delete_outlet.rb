@@ -1,14 +1,14 @@
 module Mutations
   module Outlet
-    class CreateOutlet < BaseMutation
-      argument :outlet_details, Types::Inputs::OutletInput, required: true
+    class DeleteOutlet < BaseMutation
+      argument :id, ID, required: true
 
       field :outlet, Types::Outlet::ConsumerOutletType, null: false
       field :errors, [ String ], null: false
 
-      def resolve(outlet_details: {})
+      def resolve(id: [])
         begin
-          outlet_service = ::Outlets::ConsumerOutletService.new(outlet_details.to_h).create_consumer_outlet
+          outlet_service = ::Outlets::ConsumerOutletService.new({ id: id }).delete_consumer_outlet
           if outlet_service.success?
             {
               outlet: outlet_service.outlet,

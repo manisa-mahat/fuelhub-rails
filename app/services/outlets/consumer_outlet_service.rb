@@ -19,8 +19,22 @@ module Outlets
       @success
     end
 
-    private
+    def get_consumer_outlet
+      get_outlets
+      self
+    end
 
+    def delete_consumer_outlet
+      destroy_outlets
+      self
+    end
+
+    def update_consumer_outlet
+      update_outlets
+      self
+    end
+
+    private
     def create_outlets
       begin
         @outlet = ConsumerOutlet.new(consumer_outlet_params)
@@ -32,6 +46,37 @@ module Outlets
         @success = false
         @errors << error.message
       end
+    end
+
+    def get_outlets
+      begin
+        @outlets = ConsumerOutlet.all.reverse
+        @success = true
+        @errors = []
+      rescue ActiveRecord::Rollback => e
+          @success = false
+          @errors << e.message
+      end
+    end
+
+    def destroy_outlets
+      begin
+        consumer_outlet = ConsumerOutlet.find(params[:id])
+          if consumer_outlet.destroy!
+            @outlet = consumer_outlet
+            @success = true
+            @errors = []
+          else
+            @success = false
+            @errors = @outlet
+          end
+      rescue ActiveRecord::ActiveRecordError => error
+        @success = true
+        @errors = [ error.message ]
+      end
+    end
+
+    def update_outlets
     end
 
     def consumer_outlet_params

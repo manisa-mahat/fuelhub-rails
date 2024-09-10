@@ -1,7 +1,7 @@
 module Types
   module Enums
     module ResourceEnums
-      class CategoryEnum < BaseEnum
+      class ResourcesCategoryEnum < BaseEnum
         ::Resources::ResourceCategoryEnum::CATEGORY.each do |name, _value|
           value name, name
         end

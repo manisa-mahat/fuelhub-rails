@@ -7,7 +7,7 @@ module Mutations
       field :errors, [ String ], null: true
 
       def resolve(resource_input: {})
-      service = Resources::ResourceService.new(resource_input.to_h)
+      service = Resources::ResourceService.new(resource_input.to_h.merge(current_user: context[:current_user]))
       result = service.perform_create_resource
         # debugger
         # result = service.create_resource

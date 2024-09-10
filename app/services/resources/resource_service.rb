@@ -14,9 +14,9 @@ module Resources
     end
 
     private
+
     def create_resource
-      # authorize_admin!
-      @resource = Resource.new(resource_params)
+      @resource = Resource.new(resource_params.merge(user_id: current_user.id))
       if @resource.save!
         success_response(@resource)
       else
@@ -46,7 +46,9 @@ module Resources
       end
     end
 
-    # private
+    def current_user
+      current_user ||= params[:current_user]
+    end
 
     def authorize_admin!
       raise StandardError.new("Unauthorized") unless user.admin?
@@ -57,7 +59,7 @@ module Resources
     end
 
     def resource_params
-      ActionController::Parameters.new(params).permit(:user_id, :resource_id, :resource_category, :resource_status, :tenant_id)
+      ActionController::Parameters.new(params).permit(:resource_category, :resource_status, :tenant_id)
     end
 
     def success_response(resource)

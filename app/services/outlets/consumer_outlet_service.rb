@@ -77,6 +77,21 @@ module Outlets
     end
 
     def update_outlets
+      begin
+        consumer_outlet = ConsumerOutlet.find(params[:consumer_outlet_id])
+        if consumer_outlet.present?
+          consumer_outlet.update!(consumer_outlet_params)
+          @outlet = consumer_outlet
+          @success = true
+          @errors = []
+        else
+          @success = false
+          @errors = @outlet
+        end
+      rescue ActiveRecord::ActiveRecordError => error
+        @success = true
+        @errors = [ error.message ]
+      end
     end
 
     def consumer_outlet_params

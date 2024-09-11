@@ -5,7 +5,7 @@ module Resources::ResourceCategoryEnum
       rails_tank: "rail_tank",
       tank_wagon: "tank_wagon",
       tanker_LNG: "tanker_LNG",
-      bitumen_truck: "bitumen_truck"
+      bitumen_truck: "bituman_truck"
     }.freeze
 
     included do

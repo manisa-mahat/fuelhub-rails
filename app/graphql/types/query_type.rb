@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module Types
   class QueryType < Types::BaseObject
     field :node, Types::NodeType, null: true, description: "Fetches an object given its ID." do
@@ -19,6 +17,8 @@ module Types
 
     field :user, resolver: Resolvers::User::UserResolver
     field :tenant, resolver: Resolvers::Tenant::TenantResolver
+    # Define the `get_assets` query field
+    field :get_resources, description: "Fetch all resources", resolver: Resolvers::Resource::GetResource
     field :consumer, resolver: Resolvers::Consumer::ConsumerResolver
     field :consumers, resolver: Resolvers::Consumer::ConsumersResolver
     field :outlets, resolver: Resolvers::Outlets::OutletResolver

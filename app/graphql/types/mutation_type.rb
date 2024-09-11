@@ -10,6 +10,9 @@ module Types
     field :delete_product, mutation: Mutations::Product::DeleteProduct
     field :update_product, mutation: Mutations::Product::UpdateProduct
 
+    field :create_resource, description: "Mutation for creating resource", mutation: Mutations::Resource::CreateResourceMutation
+    field :delete_resource, description: "Mutation for deleting resource", mutation: Mutations::Resource::DeleteResourceMutation
+    field :update_resource, description: "Mutation for updating resource", mutation: Mutations::Resource::UpdateResourceMutation
     field :create_consumer, mutation: Mutations::Consumer::CreateConsumer
     field :update_consumer, mutation: Mutations::Consumer::UpdateConsumer
     field :delete_consumer, mutation: Mutations::Consumer::DeleteConsumer

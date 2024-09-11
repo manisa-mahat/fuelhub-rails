@@ -19,5 +19,6 @@ module Types
 
     field :user, resolver: Resolvers::User::UserResolver
     field :tenant, resolver: Resolvers::Tenant::TenantResolver
+    field :outlets, resolver: Resolvers::Outlets::OutletResolver
   end
 end

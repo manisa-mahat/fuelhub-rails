@@ -50,7 +50,7 @@ module Outlets
 
     def get_outlets
       begin
-        @outlets = ConsumerOutlet.all.reverse
+        @outlets = ConsumerOutlet.all
         @success = true
         @errors = []
       rescue ActiveRecord::Rollback => e

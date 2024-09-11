@@ -7,5 +7,12 @@ module Types
 
     field :delete_product, mutation: Mutations::Product::DeleteProduct
     field :update_product, mutation: Mutations::Product::UpdateProduct
+
+    field :create_consumer, mutation: Mutations::Consumer::CreateConsumer
+    field :update_consumer, mutation: Mutations::Consumer::UpdateConsumer
+    field :delete_consumer, mutation: Mutations::Consumer::DeleteConsumer
+
+    field :delete_product, mutation: Mutations::Product::DeleteProduct
+    field :update_product, mutation: Mutations::Product::UpdateProduct
   end
 end

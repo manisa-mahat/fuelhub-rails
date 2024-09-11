@@ -1,8 +1,8 @@
 module Resources::ResourceStatusEnum
   extend ActiveSupport::Concern
     STATUS = {
-      active: "Active",
-      inactive: "Inactive"
+      available: "Available",
+      unavailable: "Unavailable"
 }.freeze
   included do
     enum resource_status: STATUS

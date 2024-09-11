@@ -1,9 +1,11 @@
 module Resources::ResourceCategoryEnum
   extend ActiveSupport::Concern
     CATEGORY = {
-      trailer: "trailer",
-      truck: "truck",
-      tank_wagon: "tank_wagon"
+      tanker_truck: "tanker_truck",
+      rails_tank: "rail_tank",
+      tank_wagon: "tank_wagon",
+      tanker_LNG: "tanker_LNG",
+      bitumen_truck: "bituman_truck"
     }.freeze
 
     included do

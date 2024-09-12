@@ -10,9 +10,34 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_09_11_051543) do
+ActiveRecord::Schema[7.2].define(version: 2024_09_11_182132) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "consumer_outlets", force: :cascade do |t|
+    t.string "name"
+    t.string "address"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "consumers", force: :cascade do |t|
+    t.string "name"
+    t.integer "tenant_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "delivery_orders", force: :cascade do |t|
+    t.string "planned_at"
+    t.string "completed_at"
+    t.bigint "consumer_outlet_id", null: false
+    t.bigint "order_group_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["consumer_outlet_id"], name: "index_delivery_orders_on_consumer_outlet_id"
+    t.index ["order_group_id"], name: "index_delivery_orders_on_order_group_id"
+  end
 
   create_table "drivers", force: :cascade do |t|
     t.string "name"
@@ -25,6 +50,31 @@ ActiveRecord::Schema[7.2].define(version: 2024_09_11_051543) do
     t.datetime "updated_at", null: false
     t.index ["tenant_id"], name: "index_drivers_on_tenant_id"
     t.index ["user_id"], name: "index_drivers_on_user_id"
+  end
+
+  create_table "line_items", force: :cascade do |t|
+    t.string "name"
+    t.string "quantity"
+    t.string "unit"
+    t.string "status"
+    t.bigint "delivery_order_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["delivery_order_id"], name: "index_line_items_on_delivery_order_id"
+  end
+
+  create_table "order_groups", force: :cascade do |t|
+    t.string "status"
+    t.string "planned_at"
+    t.string "completed_at"
+    t.bigint "consumer_id", null: false
+    t.bigint "user_id", null: false
+    t.bigint "tenant_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["consumer_id"], name: "index_order_groups_on_consumer_id"
+    t.index ["tenant_id"], name: "index_order_groups_on_tenant_id"
+    t.index ["user_id"], name: "index_order_groups_on_user_id"
   end
 
   create_table "products", force: :cascade do |t|
@@ -68,8 +118,14 @@ ActiveRecord::Schema[7.2].define(version: 2024_09_11_051543) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "delivery_orders", "consumer_outlets"
+  add_foreign_key "delivery_orders", "order_groups"
   add_foreign_key "drivers", "tenants"
   add_foreign_key "drivers", "users"
+  add_foreign_key "line_items", "delivery_orders"
+  add_foreign_key "order_groups", "consumers"
+  add_foreign_key "order_groups", "tenants"
+  add_foreign_key "order_groups", "users"
   add_foreign_key "resources", "tenants"
   add_foreign_key "resources", "users"
 end

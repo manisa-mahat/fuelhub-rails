@@ -1,0 +1,17 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  status: MyString
+  planned_at: MyString
+  completed_at: MyString
+  consumer: one
+  user: one
+  tenant: one
+
+two:
+  status: MyString
+  planned_at: MyString
+  completed_at: MyString
+  consumer: two
+  user: two
+  tenant: two

@@ -5,18 +5,18 @@ module Drivers
 
     def initialize (params = {})
       @params = params
-      @user = params[:current_user] # extracts current user frrom params and assigns it to @user
+      @user = params[:current_user]
     end
 
     def perform_create_driver
-      create_driver           # initiates the driver creation process by calling the private create_driver method.
+      create_driver
     end
 
-    def execute_update_driver  # initiates the driver update process by calling the private update_driver method.
+    def execute_update_driver
       update_driver
     end
 
-    def execute_delete_driver  # initiates the driver deletion process by calling the private delete_driver method.
+    def execute_delete_driver
       delete_driver
     end
 

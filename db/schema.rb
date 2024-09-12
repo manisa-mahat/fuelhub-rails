@@ -10,15 +10,23 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_09_09_045403) do
+ActiveRecord::Schema[7.2].define(version: 2024_09_12_090404) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "consumer_outlets", force: :cascade do |t|
+    t.string "name"
+    t.string "address"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "consumers", force: :cascade do |t|
     t.string "name"
     t.integer "tenant_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "address"
   end
 
   create_table "products", force: :cascade do |t|
@@ -28,6 +36,21 @@ ActiveRecord::Schema[7.2].define(version: 2024_09_09_045403) do
     t.string "name"
     t.string "status"
     t.string "unit"
+    t.bigint "tenant_id"
+    t.bigint "user_id"
+    t.index ["tenant_id"], name: "index_products_on_tenant_id"
+    t.index ["user_id"], name: "index_products_on_user_id"
+  end
+
+  create_table "resources", force: :cascade do |t|
+    t.string "resource_category"
+    t.string "resource_status"
+    t.bigint "user_id", null: false
+    t.bigint "tenant_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["tenant_id"], name: "index_resources_on_tenant_id"
+    t.index ["user_id"], name: "index_resources_on_user_id"
   end
 
   create_table "tenants", force: :cascade do |t|
@@ -50,4 +73,9 @@ ActiveRecord::Schema[7.2].define(version: 2024_09_09_045403) do
     t.index ["jti"], name: "index_users_on_jti", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
+
+  add_foreign_key "products", "tenants"
+  add_foreign_key "products", "users"
+  add_foreign_key "resources", "tenants"
+  add_foreign_key "resources", "users"
 end

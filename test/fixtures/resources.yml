@@ -1,0 +1,15 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  resource_id: MyString
+  resource_category: MyString
+  resource_status: MyString
+  user: one
+  tenant: one
+
+two:
+  resource_id: MyString
+  resource_category: MyString
+  resource_status: MyString
+  user: two
+  tenant: two

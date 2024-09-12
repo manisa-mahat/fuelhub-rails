@@ -1,0 +1,2 @@
+class ConsumerOutlet < ApplicationRecord
+end

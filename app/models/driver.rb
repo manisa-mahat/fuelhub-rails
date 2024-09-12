@@ -1,4 +1,8 @@
 class Driver < ApplicationRecord
+  belongs_to :tenant_id
+  belongs_to :user_id
+end
+class Driver < ApplicationRecord
   # Associations
   belongs_to :tenant
   belongs_to :user

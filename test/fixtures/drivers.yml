@@ -5,13 +5,13 @@ one:
   phone: MyString
   email: MyString
   status: MyString
-  tenant: one
-  user: one
+  tenant_id: one
+  user_id: one
 
 two:
   name: MyString
   phone: MyString
   email: MyString
   status: MyString
-  tenant: two
-  user: two
+  tenant_id: two
+  user_id: two

@@ -8,7 +8,8 @@ module Mutations
 
       def resolve(product_details: {})
         begin
-          product_service = ::Products::ProductService.new(product_details.to_h).execute_create_product
+          # debugger
+          product_service = ::Products::ProductService.new(product_details.to_h.merge(current_user: context[:current_user])).execute_create_product
           if product_service.success?
             {
               product: product_service.product,

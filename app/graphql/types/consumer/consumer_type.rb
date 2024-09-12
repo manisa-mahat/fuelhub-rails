@@ -3,7 +3,7 @@
 module Types
   module Consumer
     class ConsumerType < Types::BaseObject
-      field :consumer_id, ID
+      # field :consumer_id, ID
       field :id, ID, null: false
       field :name, String
       field :tenant_id, Integer

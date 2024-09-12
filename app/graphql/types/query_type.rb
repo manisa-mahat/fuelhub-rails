@@ -16,7 +16,9 @@ module Types
     end
 
     field :user, resolver: Resolvers::User::UserResolver
+    field :users, resolver: Resolvers::User::UsersResolver
     field :tenant, resolver: Resolvers::Tenant::TenantResolver
+    field :tenants, resolver: Resolvers::Tenant::TenantsResolver
     # Define the `get_assets` query field
     field :get_resources, description: "Fetch all resources", resolver: Resolvers::Resource::GetResource
     field :consumer, resolver: Resolvers::Consumer::ConsumerResolver

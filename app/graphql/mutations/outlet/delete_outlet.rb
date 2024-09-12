@@ -4,7 +4,7 @@ module Mutations
       argument :id, ID, required: true
 
       field :outlet, Types::Outlet::ConsumerOutletType, null: false
-      field :message, [ String ], null: false
+      field :message, String, null: false
       field :errors, [ String ], null: false
 
       def resolve(id: [])
@@ -19,6 +19,7 @@ module Mutations
           else
             {
               outlet: nil,
+              message: "Cannot be deleted.",
               errors: outlet_service.errors
             }
           end

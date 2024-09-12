@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 
 module Products
   class ProductService
@@ -107,3 +108,135 @@ module Products
     end
   end
 end
+=======
+
+module Products
+  class ProductService
+    attr_reader :params
+    attr_accessor :success, :errors, :product, :products
+
+    def initialize(params = {})
+    @params = params
+    @success = false
+    @errors = []
+    end
+
+
+    def execute_create_product
+      create_product
+      self
+    end
+
+    def execute_update_product
+      update_product
+      self
+    end
+
+    def execute_delete_product
+      delete_product
+      self
+    end
+
+    def success?
+      @success
+    end
+
+    private
+    def get_products
+      begin
+        @products = Product.all.reverse
+        @success = true
+        @errors = []
+      rescue ActiveRecord::Rollback => e
+          @success = false
+          @errors << e.message
+      end
+    end
+
+    def create_product
+      begin
+        if current_user.present?
+          @product = Product.new(product_params.merge(user_id: current_user.id, tenant_id: current_user.tenant_id))
+          if @product.save!
+            @success = true
+            @errors = []
+          else
+            @success = false
+            @errors =product.errors.full_messages
+          end
+        else
+          @success = false
+          @errorrs = [ "Product Cannot be created." ]
+        end
+      rescue ActiveRecord::RecordInvalid => err
+        @success = false
+        @errors << err.message
+      rescue ActiveRecord::RecordNotFound => err
+        @success = false
+        @errors << err.message
+      end
+    end
+
+    def update_product
+      begin
+        @product = Product.find(params[:id])
+        if current_user.present?
+          if @product.present?
+            @product.update!(product_params)
+            @success = true
+            @errors = []
+          else
+            @success = false
+            @errors = product.errors.full_messages
+          end
+        else
+          @success = false
+          @errorrs = [ "Product Cannot be updated." ]
+        end
+      rescue ActiveRecord::RecordNotFound => e
+        @success = false
+        @errors = [ e.message ]
+
+      rescue StandardError => e
+        @success = false
+        @errors = [ e.message ]
+      end
+    end
+
+    def delete_product
+      begin
+        @product = Product.find(params[:id])
+        if current_user.present?
+          if @product.destroy!
+            @success = true
+            @errors = []
+          else
+            @success = false
+            @errors = product.errors.full_messages
+          end
+        else
+          @success = false
+          @errorrs = [ "Product Cannot be deleted." ]
+        end
+
+      rescue ActiveRecord::RecordNotFound => e
+        @success = false
+        @errors = [ e.message ]
+
+      rescue StandardError => e
+        @success = false
+        @errors = [ e.message ]
+      end
+    end
+
+    def product_params
+      ActionController::Parameters.new(params).permit(:name, :category, :status, :unit)
+    end
+
+    def current_user
+      current_user = params[:current_user]
+      @current_user ||= current_user
+    end
+  end
+end
+>>>>>>> 705db1a262ae5ebe02ecb1e36d2123808908c651

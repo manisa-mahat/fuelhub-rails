@@ -22,5 +22,6 @@ module Types
     field :consumer, resolver: Resolvers::Consumer::ConsumerResolver
     field :consumers, resolver: Resolvers::Consumer::ConsumersResolver
     field :outlets, resolver: Resolvers::Outlets::OutletResolver
+    field :products, resolver: Resolvers::Products::ProductResolver
   end
 end

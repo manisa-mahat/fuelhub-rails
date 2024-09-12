@@ -1,7 +1,7 @@
 class Resource < ApplicationRecord
   # Associations
   belongs_to :user
-  belongs_to :tenant
+  acts_as_tenant(:tenant)
 
   # Enums for asset category and status
   include Resources::ResourceCategoryEnum

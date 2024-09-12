@@ -3,4 +3,5 @@ class Consumer < ApplicationRecord
   def consumer_id
     id
   end
+  has_many :consumer_outlets
 end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_09_12_080223) do
+ActiveRecord::Schema[7.2].define(version: 2024_09_12_090404) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -31,6 +31,12 @@ ActiveRecord::Schema[7.2].define(version: 2024_09_12_080223) do
     t.string "address"
   end
 
+  create_table "organizations", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "products", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -38,8 +44,8 @@ ActiveRecord::Schema[7.2].define(version: 2024_09_12_080223) do
     t.string "name"
     t.string "status"
     t.string "unit"
-    t.bigint "tenant_id"
-    t.bigint "user_id"
+    t.bigint "tenant_id", null: false
+    t.bigint "user_id", null: false
     t.index ["tenant_id"], name: "index_products_on_tenant_id"
     t.index ["user_id"], name: "index_products_on_user_id"
   end

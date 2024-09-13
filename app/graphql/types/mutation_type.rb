@@ -1,16 +1,3 @@
-<<<<<<< HEAD
-module Types
-  class MutationType < Types::BaseObject
-    field :create_product, mutation: Mutations::Product::CreateProduct
-    field :create_user, mutation: Mutations::User::CreateUser
-    field :login_user, mutation: Mutations::User::LoginUser
-    field :logout_user, mutation: Mutations::User::LogoutUser
-
-    field :delete_product, mutation: Mutations::Product::DeleteProduct
-    field :update_product, mutation: Mutations::Product::UpdateProduct
-  end
-end
-=======
 module Types
   class MutationType < Types::BaseObject
     field :create_product, mutation: Mutations::Product::CreateProduct
@@ -31,4 +18,3 @@ module Types
     field :delete_consumer, mutation: Mutations::Consumer::DeleteConsumer
   end
 end
->>>>>>> 705db1a262ae5ebe02ecb1e36d2123808908c651

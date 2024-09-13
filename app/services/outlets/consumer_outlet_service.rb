@@ -37,11 +37,17 @@ module Outlets
     private
     def create_outlets
       begin
-        @outlet = ConsumerOutlet.new(consumer_outlet_params)
-        if @outlet.save
-          @success  = true
-          @errors =[]
-        end
+        consumer = Consumer.find(params[:consumer_id])
+          if consumer.present?
+            @outlet = ConsumerOutlet.new(consumer_outlet_params)
+            if @outlet.save
+              @success  = true
+              @errors =[]
+            end
+          else
+            @success = false
+            @errors = [ error.message ]
+          end
       rescue ActiveRecord::ActiveRecordError => error
         @success = false
         @errors << error.message
@@ -95,7 +101,7 @@ module Outlets
     end
 
     def consumer_outlet_params
-      ActionController::Parameters.new(params).permit(:name, :address)
+      ActionController::Parameters.new(params).permit(:name, :address, :consumer_id)
     end
   end
 end

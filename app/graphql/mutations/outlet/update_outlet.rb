@@ -2,24 +2,24 @@ module Mutations
   module Outlet
     class UpdateOutlet < BaseMutation
       argument :outlet_details, Types::Inputs::OutletInput, required: true
-      argument :consumer_outlet_id, ID, required: true
 
       field :outlet, Types::Outlet::ConsumerOutletType, null: true
+      field :message, String, null: false
       field :errors, [ String ], null: false
 
-      def resolve(outlet_details:, consumer_outlet_id:)
-        params = outlet_details.to_h.merge(consumer_outlet_id: consumer_outlet_id)
-
-        outlet_service = ::Outlets::ConsumerOutletService.new(params).update_consumer_outlet
+      def resolve(outlet_details: {})
+        outlet_service = ::Outlets::ConsumerOutletService.new(outlet_details.to_h).update_consumer_outlet
 
         if outlet_service.success?
           {
             outlet: outlet_service.outlet,
+            message: "Updated Successfully.",
             errors: []
           }
         else
           {
             outlet: nil,
+            message: "Cannot Update.",
             errors: outlet_service.errors
           }
         end

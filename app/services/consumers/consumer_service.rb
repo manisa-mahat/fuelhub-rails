@@ -50,7 +50,7 @@ module Consumers
     def update_consumer
       begin
 
-        @consumer = Consumer.find(params[:consumer_id])
+        @consumer = Consumer.find(params[:id])
         # debugger
         if @consumer.present?
           @consumer.update!(consumer_params)
@@ -69,7 +69,7 @@ module Consumers
 
     def delete_consumer
       begin
-        @consumer = Consumer.find_by(id: params[:consumer_id])
+        @consumer = Consumer.find_by(id: params[:id])
         if @consumer.present?
           @consumer.destroy!
           @success = true
@@ -85,7 +85,7 @@ module Consumers
     end
 
     def consumer_params
-      ActionController::Parameters.new(params).permit(:name, :tenant_id)
+      ActionController::Parameters.new(params).permit(:name, :tenant_id, :address)
     end
   end
 end

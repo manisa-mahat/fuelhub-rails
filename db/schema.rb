@@ -28,6 +28,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_09_12_080223) do
     t.integer "tenant_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "address"
   end
 
   create_table "organizations", force: :cascade do |t|

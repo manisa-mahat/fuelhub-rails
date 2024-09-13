@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_09_11_192310) do
+ActiveRecord::Schema[7.2].define(version: 2024_09_12_080223) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -19,6 +19,8 @@ ActiveRecord::Schema[7.2].define(version: 2024_09_11_192310) do
     t.string "address"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "consumer_id", null: false
+    t.index ["consumer_id"], name: "index_consumer_outlets_on_consumer_id"
   end
 
   create_table "consumers", force: :cascade do |t|
@@ -26,6 +28,10 @@ ActiveRecord::Schema[7.2].define(version: 2024_09_11_192310) do
     t.integer "tenant_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+<<<<<<< HEAD
+=======
+    t.string "address"
+>>>>>>> 16852ce9a291e6f92e8f43ee3d46b797476a2612
   end
 
   create_table "products", force: :cascade do |t|
@@ -35,8 +41,8 @@ ActiveRecord::Schema[7.2].define(version: 2024_09_11_192310) do
     t.string "name"
     t.string "status"
     t.string "unit"
-    t.bigint "tenant_id", null: false
-    t.bigint "user_id", null: false
+    t.bigint "tenant_id"
+    t.bigint "user_id"
     t.index ["tenant_id"], name: "index_products_on_tenant_id"
     t.index ["user_id"], name: "index_products_on_user_id"
   end
@@ -73,6 +79,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_09_11_192310) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "consumer_outlets", "consumers"
   add_foreign_key "products", "tenants"
   add_foreign_key "products", "users"
   add_foreign_key "resources", "tenants"

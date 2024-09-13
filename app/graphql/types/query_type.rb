@@ -16,11 +16,14 @@ module Types
     end
 
     field :user, resolver: Resolvers::User::UserResolver
+    field :users, resolver: Resolvers::User::UsersResolver
     field :tenant, resolver: Resolvers::Tenant::TenantResolver
+    field :tenants, resolver: Resolvers::Tenant::TenantsResolver
     field :get_resources, resolver: Resolvers::Resource::GetResource, description: "Fetch all resources"
     field :consumer, resolver: Resolvers::Consumer::ConsumerResolver
     field :consumers, resolver: Resolvers::Consumer::ConsumersResolver
     field :outlets, resolver: Resolvers::Outlets::OutletResolver
+    field :products, resolver: Resolvers::Products::ProductResolver
     field :get_driver, resolver: Resolvers::Driver::GetDriver
     field :get_order_group, resolver: Resolvers::OrderGroup::GetOrderGroup, description: "Fetch a single OrderGroup by ID"
     field :get_order_groups, resolver: Resolvers::OrderGroup::GetOrderGroups, description: "Fetch multiple OrderGroups, optionally filtered by status"

@@ -43,33 +43,44 @@ module Products
     end
 
     def create_product
-      ActiveRecord::Base.transaction do
-        @product = Product.new(product_params)
-        if @product.save!
-          @success = true
-          @errors = []
+      begin
+        if current_user.present?
+          @product = Product.new(product_params.merge(user_id: current_user.id, tenant_id: current_user.tenant_id))
+          if @product.save!
+            @success = true
+            @errors = []
+          else
+            @success = false
+            @errors =product.errors.full_messages
+          end
+        else
+          @success = false
+          @errorrs = [ "Product Cannot be created." ]
         end
+      rescue ActiveRecord::RecordInvalid => err
+        @success = false
+        @errors << err.message
+      rescue ActiveRecord::RecordNotFound => err
+        @success = false
+        @errors << err.message
       end
-
-    rescue ActiveRecord::RecordInvalid => err
-        @success = false
-        @errors << err.message
-    rescue ActiveRecord::RecordNotFound => err
-        @success = false
-        @errors << err.message
     end
 
     def update_product
       begin
-        product = Product.find(params[:product_id])
-        if product.present?
-          product.update!(product_params)
-          @product = product
-          @success = true
-          @errors = []
+        @product = Product.find(params[:id])
+        if current_user.present?
+          if @product.present?
+            @product.update!(product_params)
+            @success = true
+            @errors = []
+          else
+            @success = false
+            @errors = product.errors.full_messages
+          end
         else
           @success = false
-          @errors = product.errors.full_messages
+          @errorrs = [ "Product Cannot be updated." ]
         end
       rescue ActiveRecord::RecordNotFound => e
         @success = false
@@ -84,12 +95,17 @@ module Products
     def delete_product
       begin
         @product = Product.find(params[:id])
-        if @product.destroy!
-          @success = true
-          @errors = []
+        if current_user.present?
+          if @product.destroy!
+            @success = true
+            @errors = []
+          else
+            @success = false
+            @errors = product.errors.full_messages
+          end
         else
           @success = false
-          @errors = product.errors.full_messages
+          @errorrs = [ "Product Cannot be deleted." ]
         end
 
       rescue ActiveRecord::RecordNotFound => e
@@ -104,6 +120,11 @@ module Products
 
     def product_params
       ActionController::Parameters.new(params).permit(:name, :category, :status, :unit)
+    end
+
+    def current_user
+      current_user = params[:current_user]
+      @current_user ||= current_user
     end
   end
 end

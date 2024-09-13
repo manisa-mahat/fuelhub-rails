@@ -5,5 +5,5 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable, :jwt_authenticatable,
          jwt_revocation_strategy: self
-  belongs_to :tenant
+  acts_as_tenant(:tenant)
 end

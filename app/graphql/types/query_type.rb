@@ -17,11 +17,16 @@ module Types
 
     field :user, resolver: Resolvers::User::UserResolver
     field :tenant, resolver: Resolvers::Tenant::TenantResolver
-    # Define the `get_assets` query field
-    field :get_resources, description: "Fetch all resources", resolver: Resolvers::Resource::GetResource
+    field :get_resources, resolver: Resolvers::Resource::GetResource, description: "Fetch all resources"
     field :consumer, resolver: Resolvers::Consumer::ConsumerResolver
     field :consumers, resolver: Resolvers::Consumer::ConsumersResolver
     field :outlets, resolver: Resolvers::Outlets::OutletResolver
-    field :driver, resolver: Resolvers::Driver::GetDriver
+    field :get_driver, resolver: Resolvers::Driver::GetDriver
+    field :get_order_group, resolver: Resolvers::OrderGroup::GetOrderGroup, description: "Fetch a single OrderGroup by ID"
+    field :get_order_groups, resolver: Resolvers::OrderGroup::GetOrderGroups, description: "Fetch multiple OrderGroups, optionally filtered by status"
+    field :get_delivery_order, resolver: Resolvers::DeliveryOrder::GetDeliveryOrder, description: "Fetch a single DeliveryOrder by ID"
+    field :get_delivery_orders, resolver: Resolvers::DeliveryOrder::GetDeliveryOrders, description: "Fetch multiple DeliveryOrders"
+    field :get_line_item, resolver: Resolvers::LineItem::GetLineItem, description: "Fetch a single LineItem by ID"
+    field :get_line_items, resolver: Resolvers::LineItem::GetLineItems, description: "Fetch multiple LineItems, optionally filtered by status"
   end
 end

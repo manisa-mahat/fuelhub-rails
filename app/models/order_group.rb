@@ -10,5 +10,5 @@ class OrderGroup < ApplicationRecord
   accepts_nested_attributes_for :delivery_order, allow_destroy: true, reject_if: :all_blank
 
   # Enums
-  include OrderGroup::StatusEnum
+  include OrderGroups::StatusEnum
 end

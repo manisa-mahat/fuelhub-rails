@@ -6,6 +6,6 @@ class LineItem < ApplicationRecord
   include LineItems::StatusEnum
 
   # Validations
-  validates :name, :quantity, :units, :status, presence: true
+  validates :name, :quantity, :unit, :status, presence: true
   validates :status, inclusion: { in: statuses.keys }
 end

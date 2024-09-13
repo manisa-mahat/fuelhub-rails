@@ -4,8 +4,8 @@ module Types
       field :id, ID, null: false
       field :name, String, null: false
       field :quantity, Integer, null: false
-      field :units, String, null: false
-      field :status, Types::Enums::LineItemStatusEnum, null: false
+      field :unit, String, null: false
+      field :status, Enums::LineItemEnum::LineItemStatusEnum, null: false
     end
   end
 end

@@ -1,9 +1,9 @@
 module Types
   module Enums
     module OrderGroupEnums
-      class StatusEnum < BaseEnum
+      class OrderGroupStatusEnum < BaseEnum
         ::OrderGroups::StatusEnum::STATUS.each do |name, _value|
-          value(name.to_s.upcase, name)
+          value(name.to_s, name)
         end
       end
     end

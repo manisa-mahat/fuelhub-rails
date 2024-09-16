@@ -9,14 +9,11 @@ module Mutations
       def resolve(resource_input: {})
       service = Resources::ResourceService.new(resource_input.to_h.merge(current_user: context[:current_user]))
       result = service.perform_create_resource
-        # debugger
-        # result = service.create_resource
-
-        if result.success
+      if result.success
           { resource: result.resource, errors: [] }
-        else
+      else
           { resource: nil, errors: result.errors }
-        end
+      end
       end
     end
   end

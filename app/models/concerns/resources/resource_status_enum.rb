@@ -3,7 +3,7 @@ module Resources::ResourceStatusEnum
     STATUS = {
       available: "Available",
       unavailable: "Unavailable"
-}.freeze
+  }.freeze
   included do
     enum resource_status: STATUS
   end

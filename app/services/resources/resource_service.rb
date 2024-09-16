@@ -13,6 +13,14 @@ module Resources
       create_resource
     end
 
+    def execute_delete_resource
+      delete_resource
+    end
+
+    def execute_update_resource
+      update_resource
+    end
+
     private
 
     def create_resource
@@ -28,7 +36,7 @@ module Resources
 
     def delete_resource
       @resource = find_resource
-      authorize_admin!
+      # authorize_admin!
       if @resource.destroy
         success_response(@resource)
       else
@@ -38,7 +46,7 @@ module Resources
 
     def update_resource
       @resource = find_resource
-      authorize_admin!
+      # authorize_admin!
       if @resource.update(resource_params)
         success_response(@resource)
       else
@@ -50,9 +58,9 @@ module Resources
       current_user ||= params[:current_user]
     end
 
-    def authorize_admin!
-      raise StandardError.new("Unauthorized") unless user.admin?
-    end
+    # def authorize_admin!
+    # raise StandardError.new("Unauthorized") unless user.admin?
+    # end
 
     def find_resource
       Resource.find_by!(id: params[:id])

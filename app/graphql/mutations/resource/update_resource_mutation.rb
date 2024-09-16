@@ -8,12 +8,12 @@ module Mutations
       field :errors, [ String ], null: false
 
       def resolve(id:, resource:)
-        service = Resources::ResourceService.new(params: resource.to_h.merge(id: id), current_user: context[:current_user])
-        service.execute_update_resource
+        service = Resources::ResourceService.new(resource.to_h.merge(id: id, current_user: context[:current_user]))
+        result = service.execute_update_resource
 
         {
-          resource: service.success? ? service.resource : nil,
-          errors: service.errors
+          resource: result.success ? result.resource : nil,
+          errors: result.errors
         }
       end
     end

@@ -7,12 +7,12 @@ module Mutations
       field :errors, [ String ], null: false
 
       def resolve(id:)
-        service = Resources::ResourceService.new(params: { id: id }, current_user: context[:current_user])
-        service.execute_delete_resource
+        service = Resources::ResourceService.new({ id: id }.to_h.merge(current_user: context[:current_user]))
+        result = service.execute_delete_resource
 
         {
-          success: service.success?,
-          errors: service.errors
+          success: result.success,
+          errors: result.errors
         }
       end
     end

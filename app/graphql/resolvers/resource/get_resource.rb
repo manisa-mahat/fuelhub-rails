@@ -4,7 +4,7 @@ module Resolvers
       type Types::Resource::ResourceResponseType, null: false
 
       def resolve
-        resources = Resource.all
+        resources = ::Resource.all
         {
           resources: resources,
           errors: []

@@ -6,12 +6,13 @@ module Mutations
       argument :password, String
       argument :password_confirmation, String
       argument :tenant_id, Integer
+      argument :role, String
 
       field :user, Types::User::UserType, null: true
       field :errors, [ String ], null: false
 
-      def resolve(email:, password:, password_confirmation:, tenant_id:)
-        user = ::User.create(email: email, password: password, password_confirmation: password_confirmation, tenant_id: tenant_id)
+      def resolve(email:, password:, password_confirmation:, tenant_id:, role:)
+        user = ::User.create(email: email, password: password, password_confirmation: password_confirmation, tenant_id: tenant_id, role: role)
         if user.save
           {
             user: user,

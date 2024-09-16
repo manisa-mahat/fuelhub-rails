@@ -20,6 +20,7 @@ module Mutations
           raise GraphQL::ExecutionError, "Invalid email or password or tenant"
         end
       end
+
       def valid_tenant?(user, tenant_id)
         user.tenant_id == tenant_id
       end

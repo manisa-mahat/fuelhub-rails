@@ -51,7 +51,6 @@ module Consumers
       begin
 
         @consumer = Consumer.find(params[:id])
-        # debugger
         if @consumer.present?
           @consumer.update!(consumer_params)
           @consumer = consumer

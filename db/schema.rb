@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_09_12_090404) do
+ActiveRecord::Schema[7.2].define(version: 2024_09_16_081220) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -93,8 +93,8 @@ ActiveRecord::Schema[7.2].define(version: 2024_09_12_090404) do
     t.string "name"
     t.string "status"
     t.string "unit"
-    t.bigint "tenant_id", null: false
-    t.bigint "user_id", null: false
+    t.bigint "tenant_id"
+    t.bigint "user_id"
     t.index ["tenant_id"], name: "index_products_on_tenant_id"
     t.index ["user_id"], name: "index_products_on_user_id"
   end

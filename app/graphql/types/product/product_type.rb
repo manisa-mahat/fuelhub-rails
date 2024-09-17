@@ -10,6 +10,7 @@ module Types
       field :name, String, null: false
       field :status, Enums::ProductsEnums::StatusEnum
       field :unit, Enums::ProductsEnums::UnitEnum
+      field :tenant_id, ID, null: false
     end
   end
 end

@@ -21,6 +21,11 @@ module Products
       self
     end
 
+    def execute_get_product
+      get_products
+      self
+    end
+
     def execute_delete_product
       delete_product
       self
@@ -33,12 +38,14 @@ module Products
     private
     def get_products
       begin
-        @products = Product.all.reverse
+        # Fetch products where tenant_id matches the current_user's tenant_id
+        @products = Product.where(tenant_id: current_user.tenant_id).order(created_at: :DESC)
+
         @success = true
         @errors = []
       rescue ActiveRecord::Rollback => e
-          @success = false
-          @errors << e.message
+        @success = false
+        @errors << e.message
       end
     end
 

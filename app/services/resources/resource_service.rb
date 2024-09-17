@@ -24,50 +24,75 @@ module Resources
     private
 
     def create_resource
-      @resource = Resource.new(resource_params.merge(user_id: current_user.id))
-      if @resource.save!
-        success_response(@resource)
+      if current_user.present?
+        @resource = Resource.new(resource_params.merge(user_id: current_user.id, tenant_id: current_user.tenant_id))
+        if @resource.save!
+          success_response(@resource)
+        else
+          error_response(@resource.errors.full_messages)
+        end
       else
-        error_response(@resource.errors.full_messages)
+        error_response([ "User not authenticated" ])
       end
-    rescue ActiveRecord::RecordInvalid => e
+    rescue ActiveRecord::RecordNotFound => e
+      error_response([ e.message ])
+    rescue ActiveRecord::RecordNotCreated => e
+      error_response([ e.message ])
+    rescue StandardError => e
       error_response([ e.message ])
     end
 
     def delete_resource
       @resource = find_resource
-      # authorize_admin!
-      if @resource.destroy
-        success_response(@resource)
+      if current_user.present?
+        if @resource.destroy
+          success_response(@resource)
+        else
+          error_response(@resource.errors.full_messages)
+        end
       else
-        error_response(resource.errors.full_messages)
+        error_response([ "User not authenticated" ])
       end
+    rescue ActiveRecord::RecordNotFound => e
+      error_response([ e.message ])
+    rescue ActiveRecord::RecordNotDestroyed => e
+      error_response([ e.message ])
+    rescue StandardError => e
+      error_response([ e.message ])
     end
+
+
 
     def update_resource
       @resource = find_resource
-      # authorize_admin!
-      if @resource.update(resource_params)
-        success_response(@resource)
+      if current_user.present?
+        if @resource.update(resource_params)
+          success_response(@resource)
+        else
+          error_response(resource.errors.full_messages)
+        end
       else
-        error_response(resource.errors.full_messages)
+        error_response([ "User not authenticated" ])
       end
+    rescue ActiveRecord::RecordNotFound => e
+      error_response([ e.message ])
+    rescue ActiveRecord::RecordNotDestroyed => e
+      error_response([ e.message ])
+    rescue StandardError => e
+      error_response([ e.message ])
     end
 
     def current_user
       current_user ||= params[:current_user]
     end
 
-    # def authorize_admin!
-    # raise StandardError.new("Unauthorized") unless user.admin?
-    # end
 
     def find_resource
       Resource.find_by!(id: params[:id])
     end
 
     def resource_params
-      ActionController::Parameters.new(params).permit(:resource_category, :resource_status, :tenant_id)
+      ActionController::Parameters.new(params).permit(:resource_category, :resource_status)
     end
 
     def success_response(resource)

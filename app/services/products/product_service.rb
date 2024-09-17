@@ -52,13 +52,15 @@ module Products
     def create_product
       begin
         if current_user.present?
-          @product = Product.new(product_params.merge(user_id: current_user.id, tenant_id: current_user.tenant_id))
-          if @product.save!
-            @success = true
-            @errors = []
-          else
-            @success = false
-            @errors =product.errors.full_messages
+          ActsAsTenant.with_tenant(current_user.tenant) do
+            @product = Product.new(product_params.merge(user_id: current_user.id))
+            if @product.save!
+              @success = true
+              @errors = []
+            else
+              @success = false
+              @errors =product.errors.full_messages
+            end
           end
         else
           @success = false

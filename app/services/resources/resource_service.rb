@@ -1,7 +1,7 @@
 module Resources
   class ResourceService
     attr_reader :params, :user
-    attr_accessor :resource
+    attr_accessor :resource, :resources
 
     def initialize(params = {})
       @params = params
@@ -19,6 +19,10 @@ module Resources
 
     def execute_update_resource
       update_resource
+    end
+
+    def execute_get_resources
+      get_resources
     end
 
     private
@@ -81,6 +85,18 @@ module Resources
     rescue StandardError => e
       error_response([ e.message ])
     end
+
+    def get_resources
+      begin
+        @resources = Resource.where(tenant_id: current_user.tenant_id).order(created_at: :DESC)
+        success_response(@resources)
+      rescue ActiveRecord::RecordNotFound => e
+        error_response([ e.message ])
+      rescue StandardError => e
+        error_response([ e.message ])
+      end
+    end
+
 
     def current_user
       current_user ||= params[:current_user]

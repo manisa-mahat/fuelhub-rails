@@ -4,7 +4,9 @@ module Resolvers
       type Types::Resource::ResourceResponseType, null: false
 
       def resolve
-        resources = ::Resource.all
+        current_user = context[:current_user]
+        resources = ::Resource.where(tenant_id: current_user.tenant_id)
+
         {
           resources: resources,
           errors: []

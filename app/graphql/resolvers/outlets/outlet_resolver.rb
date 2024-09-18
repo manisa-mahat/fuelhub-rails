@@ -2,18 +2,19 @@ module Resolvers
   module Outlets
     class OutletResolver < BaseResolver
       type Types::Outlet::OutletResponseType, null: true
+      argument :id, ID, required: true
 
-      def resolve
-        begin
-          outlets = ConsumerOutlet.order(created_at: :DESC)
+      def resolve(id:)
+        outlet_service = ::Outlets::ConsumerOutletService.new({ id: id }).execute_get_outlet
+        if outlet_service.success?
           {
-            consumer_outlets: outlets,
+            consumer_outlets: outlet_service.outlets,
             errors: []
           }
-        rescue GraphQL::ExecutionError => error
+        else
           {
             consumer_outlets: nil,
-            errors: [ error.message ]
+            errors: outlet_service.errors
           }
         end
       end

@@ -84,7 +84,7 @@ module Consumers
     end
 
     def consumer_params
-      ActionController::Parameters.new(params).permit(:name, :tenant_id, :address)
+      ActionController::Parameters.new(params).permit(:name, :tenant_id, :address, :email, :phone_number)
     end
   end
 end

@@ -5,10 +5,14 @@ module Types
       field :status, Types::Enums::OrderGroupEnums::OrderGroupStatusEnum, null: false
       field :planned_at, GraphQL::Types::ISO8601DateTime, null: true
       field :completed_at, GraphQL::Types::ISO8601DateTime, null: true
-      field :consumer_id, ID, null: false
+      field :consumer_id, ID, null: true
       field :delivery_order, Types::DeliveryOrder::DeliveryOrderType, null: true
       field :tenant_id, ID, null: true
       field :user_id, ID, null: true
+      field :frequency, String
+      field :recurring, Boolean
+      field :start_date, GraphQL::Types::ISO8601DateTime, null: true
+      field :end_date, GraphQL::Types::ISO8601DateTime, null: true
     end
   end
 end

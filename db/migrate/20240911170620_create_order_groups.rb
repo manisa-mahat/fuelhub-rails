@@ -10,8 +10,8 @@ class CreateOrderGroups < ActiveRecord::Migration[7.2]
 
       t.timestamps
     end
-    t.index [ "consumer_id" ], name: "index_order_groups_on_consumer_id"
-    t.index [ "tenant_id" ], name: "index_order_groups_on_tenant_id"
-    t.index [ "user_id" ], name: "index_order_groups_on_user_id"
+    #     t.index [ "consumer_id" ], name: "index_order_groups_on_consumer_id"
+    #     t.index [ "tenant_id" ], name: "index_order_groups_on_tenant_id"
+    #     t.index [ "user_id" ], name: "index_order_groups_on_user_id"
   end
 end

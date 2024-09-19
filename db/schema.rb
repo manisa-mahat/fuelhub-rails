@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_09_16_081220) do
+ActiveRecord::Schema[7.2].define(version: 2024_09_19_034052) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -31,12 +31,6 @@ ActiveRecord::Schema[7.2].define(version: 2024_09_16_081220) do
     t.string "address"
   end
 
-  create_table "organizations", force: :cascade do |t|
-    t.string "name"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
   create_table "delivery_orders", force: :cascade do |t|
     t.string "planned_at"
     t.string "completed_at"
@@ -46,19 +40,6 @@ ActiveRecord::Schema[7.2].define(version: 2024_09_16_081220) do
     t.datetime "updated_at", null: false
     t.index ["consumer_outlet_id"], name: "index_delivery_orders_on_consumer_outlet_id"
     t.index ["order_group_id"], name: "index_delivery_orders_on_order_group_id"
-  end
-
-  create_table "drivers", force: :cascade do |t|
-    t.string "name"
-    t.string "phone"
-    t.string "email"
-    t.string "status"
-    t.bigint "tenant_id", null: false
-    t.bigint "user_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["tenant_id"], name: "index_drivers_on_tenant_id"
-    t.index ["user_id"], name: "index_drivers_on_user_id"
   end
 
   create_table "line_items", force: :cascade do |t|
@@ -81,6 +62,10 @@ ActiveRecord::Schema[7.2].define(version: 2024_09_16_081220) do
     t.bigint "tenant_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "recurring"
+    t.string "frequency"
+    t.datetime "start_date"
+    t.datetime "end_date"
     t.index ["consumer_id"], name: "index_order_groups_on_consumer_id"
     t.index ["tenant_id"], name: "index_order_groups_on_tenant_id"
     t.index ["user_id"], name: "index_order_groups_on_user_id"
@@ -132,6 +117,12 @@ ActiveRecord::Schema[7.2].define(version: 2024_09_16_081220) do
   end
 
   add_foreign_key "consumer_outlets", "consumers"
+  add_foreign_key "delivery_orders", "consumer_outlets"
+  add_foreign_key "delivery_orders", "order_groups"
+  add_foreign_key "line_items", "delivery_orders"
+  add_foreign_key "order_groups", "consumers"
+  add_foreign_key "order_groups", "tenants"
+  add_foreign_key "order_groups", "users"
   add_foreign_key "products", "tenants"
   add_foreign_key "products", "users"
   add_foreign_key "resources", "tenants"

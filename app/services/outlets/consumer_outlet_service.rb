@@ -19,7 +19,7 @@ module Outlets
       @success
     end
 
-    def get_consumer_outlet
+    def execute_get_outlet
       get_outlets
       self
     end
@@ -56,9 +56,16 @@ module Outlets
 
     def get_outlets
       begin
-        @outlets = ConsumerOutlet.all
-        @success = true
-        @errors = []
+        # debugger
+        consumer = Consumer.find(params[:id])
+        if consumer.present?
+          @outlets = consumer.consumer_outlets
+          @success = true
+          @errors = []
+        else
+          @success = false
+          @errors << "Customer not found"
+        end
       rescue ActiveRecord::Rollback => e
           @success = false
           @errors << e.message
@@ -84,7 +91,7 @@ module Outlets
 
     def update_outlets
       begin
-        consumer_outlet = ConsumerOutlet.find(params[:consumer_outlet_id])
+        consumer_outlet = ConsumerOutlet.find(params[:id])
         if consumer_outlet.present?
           consumer_outlet.update!(consumer_outlet_params)
           @outlet = consumer_outlet

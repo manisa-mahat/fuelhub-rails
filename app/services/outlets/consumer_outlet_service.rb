@@ -91,7 +91,7 @@ module Outlets
 
     def update_outlets
       begin
-        consumer_outlet = ConsumerOutlet.find(params[:consumer_outlet_id])
+        consumer_outlet = ConsumerOutlet.find(params[:id])
         if consumer_outlet.present?
           consumer_outlet.update!(consumer_outlet_params)
           @outlet = consumer_outlet

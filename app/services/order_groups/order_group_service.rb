@@ -1,9 +1,7 @@
 module OrderGroups
   class OrderGroupService
     attr_reader :params, :user
-    attr_accessor :order_group
-
-    VALID_FREQUENCIES = %w[daily weekly bi-weekly monthly].freeze
+    attr_accessor :order_group, :consumer
 
     def initialize(params, user:)
       @params = params
@@ -11,63 +9,70 @@ module OrderGroups
     end
 
     def perform_create_order_group
-      validate_frequency if order_group_params[:recurring]
+      create_order_group
+    end
 
-      create_order_group.tap do |result|
-        if result.success && @order_group&.recurring
-          schedule_next_order_group
-        end
-      end
+    def execute_delete_order_group
+      delete_order_group
+    end
+
+    def execute_update_order_group
+      update_order_group
     end
 
     private
 
     def create_order_group
-      return error_response([ "User not Authenticated." ]) if current_user.nil?
-
-      if order_group_params[:recurring] && order_group_params[:frequency].blank?
-        return error_response([ "Frequency must be provided for recurring orders." ])
+      if current_user.nil?
+        return error_response([ "User not Authenticated." ])
       end
 
-      @order_group = OrderGroup.new(order_group_params.merge(user_id: @user.id, tenant_id: current_user.tenant_id))
+      begin
+        @consumer = Consumer.find(order_group_params[:consumer_id])
+        @order_group = OrderGroup.new(order_group_params.merge(user_id: current_user.id, tenant_id: current_user.tenant_id))
+        if @order_group.save
+          # Mailer Integration
+          OrderGroupMailer.create_order_mailer(@consumer, @order_group).deliver_now
 
-      save_order_group(@order_group)
+          success_response(@order_group)
+        else
+          error_response(@order_group.errors.full_messages)
+        end
+      rescue ActiveRecord::RecordInvalid => e
+        error_response([ e.message ])
+      rescue StandardError => e
+        error_response([ e.message ])
+      end
     end
 
-    def save_order_group(order_group)
-      if order_group.save
-        success_response(order_group)
+    def update_order_group
+      find_order_group
+
+      if @order_group.update(order_group_params)
+        success_response(@order_group)
       else
-        error_response(order_group.errors.full_messages)
-      end
-    rescue ActiveRecord::RecordInvalid => e
-      error_response([ e.message ])
-    end
-
-    def validate_frequency
-      frequency = order_group_params[:frequency]
-      unless VALID_FREQUENCIES.include?(frequency)
-        raise ActiveRecord::RecordInvalid.new(@order_group), "Frequency must be one of: #{VALID_FREQUENCIES.join(', ')}"
+        error_response(@order_group.errors.full_messages)
       end
     end
 
-    def schedule_next_order_group
-      RecurringJob.perform_in(calculate_delay, @order_group.id)
-    end
+    def delete_order_group
+      find_order_group
 
-    def calculate_delay
-      case @order_group.frequency
-      when "daily"
-        1.minutes
-      when "weekly"
-        1.week
-      when "bi-weekly"
-        2.weeks
-      when "monthly"
-        1.month
+      if @order_group.destroy
+        success_response(@order_group)
       else
-        raise ArgumentError, "Invalid frequency"
+        error_response(@order_group.errors.full_messages)
       end
+    end
+
+    def current_user
+      @user
+    end
+
+
+
+    def find_order_group(id)
+      @order_group = OrderGroup.find(id)
     end
 
     def order_group_params
@@ -78,18 +83,14 @@ module OrderGroups
           :planned_at,
           :completed_at,
           :consumer_id,
-          :tenant_id,
-          :user_id,
-          :recurring,
-          :frequency,
           :start_date,
           :end_date,
+          :frequency,
           delivery_order_attributes: [
             :planned_at,
             :completed_at,
             :consumer_outlet_id,
             line_items_attributes: [
-              :id,
               :name,
               :quantity,
               :unit,
@@ -105,10 +106,6 @@ module OrderGroups
 
     def error_response(errors)
       OpenStruct.new(success: false, order_group: nil, errors: errors)
-    end
-
-    def current_user
-      @user
     end
   end
 end

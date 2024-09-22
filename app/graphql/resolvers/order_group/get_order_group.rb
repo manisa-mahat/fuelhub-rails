@@ -6,9 +6,10 @@ module Resolvers
       argument :id, ID, required: true
 
       def resolve(id:)
-        ::OrderGroup.find(id)
+        order_group = ::OrderGroup.find(id)
+        { order_group: order_group, errors: [] }
       rescue ActiveRecord::RecordNotFound => e
-        GraphQL::ExecutionError.new("OrderGroup not found: #{e.message}")
+        { order_group: nil, errors: [ "OrderGroup not found: #{e.message}" ] }
       end
     end
   end

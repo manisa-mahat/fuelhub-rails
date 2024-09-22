@@ -10,8 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-
-ActiveRecord::Schema[7.2].define(version: 2024_09_18_112902) do
+ActiveRecord::Schema[7.2].define(version: 2024_09_20_095953) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -32,7 +31,6 @@ ActiveRecord::Schema[7.2].define(version: 2024_09_18_112902) do
     t.string "address"
     t.string "email"
     t.string "phone_number"
-
   end
 
   create_table "delivery_orders", force: :cascade do |t|
@@ -66,19 +64,14 @@ ActiveRecord::Schema[7.2].define(version: 2024_09_18_112902) do
     t.bigint "tenant_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.boolean "recurring"
     t.string "frequency"
     t.datetime "start_date"
     t.datetime "end_date"
+    t.boolean "recurring"
+    t.integer "parent_id"
     t.index ["consumer_id"], name: "index_order_groups_on_consumer_id"
     t.index ["tenant_id"], name: "index_order_groups_on_tenant_id"
     t.index ["user_id"], name: "index_order_groups_on_user_id"
-  end
-
-  create_table "organizations", force: :cascade do |t|
-    t.string "name"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
   end
 
   create_table "products", force: :cascade do |t|
@@ -88,8 +81,8 @@ ActiveRecord::Schema[7.2].define(version: 2024_09_18_112902) do
     t.string "name"
     t.string "status"
     t.string "unit"
-    t.bigint "tenant_id", null: false
-    t.bigint "user_id", null: false
+    t.bigint "tenant_id"
+    t.bigint "user_id"
     t.index ["tenant_id"], name: "index_products_on_tenant_id"
     t.index ["user_id"], name: "index_products_on_user_id"
   end
@@ -128,9 +121,10 @@ ActiveRecord::Schema[7.2].define(version: 2024_09_18_112902) do
 
   add_foreign_key "consumer_outlets", "consumers", on_delete: :cascade
   add_foreign_key "delivery_orders", "consumer_outlets"
-  add_foreign_key "delivery_orders", "order_groups"
-  add_foreign_key "line_items", "delivery_orders"
-  add_foreign_key "order_groups", "consumers"
+  add_foreign_key "delivery_orders", "order_groups", on_delete: :cascade
+  add_foreign_key "line_items", "delivery_orders", on_delete: :cascade
+  add_foreign_key "order_groups", "consumers", on_delete: :cascade
+  add_foreign_key "order_groups", "order_groups", column: "parent_id"
   add_foreign_key "order_groups", "tenants"
   add_foreign_key "order_groups", "users"
   add_foreign_key "products", "tenants"

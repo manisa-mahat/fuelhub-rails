@@ -6,8 +6,8 @@ module Types
       argument :completed_at, GraphQL::Types::ISO8601DateTime, required: false
       argument :consumer_id, ID, required: true
       argument :delivery_order_attributes, Types::InputObjects::DeliveryOrderInputType, required: false
-      argument :frequency, String, required: false
       argument :recurring, Boolean, required: false
+      argument :frequency, String, required: false
       argument :start_date, GraphQL::Types::ISO8601DateTime, required: false
       argument :end_date, GraphQL::Types::ISO8601DateTime, required: false
     end

@@ -367,6 +367,7 @@ DEPENDENCIES
   graphql
   importmap-rails
   jbuilder
+  logger (= 1.6.0)
   pg (~> 1.1)
   puma (>= 5.0)
   rack-cors

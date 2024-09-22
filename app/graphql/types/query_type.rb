@@ -31,5 +31,7 @@ module Types
     field :get_delivery_orders, resolver: Resolvers::DeliveryOrder::GetDeliveryOrders, description: "Fetch multiple DeliveryOrders"
     field :get_line_item, resolver: Resolvers::LineItem::GetLineItem, description: "Fetch a single LineItem by ID"
     field :get_line_items, resolver: Resolvers::LineItem::GetLineItems, description: "Fetch multiple LineItems, optionally filtered by status"
+    field :recurring_jobs, resolver: Resolvers::RecurringOrder::RecurringJobsResolver
+    field :recurring_job_by_id, resolver: Resolvers::RecurringOrder::RecurringJobByIdResolver
   end
 end

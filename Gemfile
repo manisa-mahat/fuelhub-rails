@@ -66,3 +66,4 @@ gem "devise-jwt"
 
 gem "sidekiq", "~> 7.3"
 gem "sidekiq-scheduler"
+gem "logger", "1.6.0"

@@ -7,8 +7,8 @@ module Mutations
       field :errors, [ String ], null: true
 
       def resolve(id:)
-        service = DeliveryOrder::DeliveryOrderService.new({}, user: context[:current_user])
-        result = service.delete_delivery_order(id)
+        service = DeliveryOrders::DeliveryOrderService.new({ id: id }, user: context[:current_user])
+        result = service.execute_delete_delivery_order
 
         {
           success: result.success,

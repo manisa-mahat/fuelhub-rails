@@ -8,7 +8,7 @@ module Mutations
       field :errors, [ String ], null: true
 
       def resolve(id:, line_item_input:)
-        service = LineItem::LineItemService.new({ line_item: line_item_input.to_h }, user: context[:current_user])
+        service = LineItems::LineItemService.new({ line_item: line_item_input.to_h }, user: context[:current_user])
         result = service.update_line_item(id)
 
         if result.success

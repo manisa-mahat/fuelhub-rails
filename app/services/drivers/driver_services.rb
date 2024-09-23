@@ -8,7 +8,7 @@ module Drivers
       @user = params[:current_user]
     end
 
-    def perform_create_driver
+    def execute_create_driver
       create_driver
     end
 

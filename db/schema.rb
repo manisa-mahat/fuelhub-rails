@@ -31,12 +31,6 @@ ActiveRecord::Schema[7.2].define(version: 2024_09_16_081220) do
     t.string "address"
   end
 
-  create_table "organizations", force: :cascade do |t|
-    t.string "name"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
   create_table "delivery_orders", force: :cascade do |t|
     t.string "planned_at"
     t.string "completed_at"
@@ -93,8 +87,8 @@ ActiveRecord::Schema[7.2].define(version: 2024_09_16_081220) do
     t.string "name"
     t.string "status"
     t.string "unit"
-    t.bigint "tenant_id"
-    t.bigint "user_id"
+    t.bigint "tenant_id", null: false
+    t.bigint "user_id", null: false
     t.index ["tenant_id"], name: "index_products_on_tenant_id"
     t.index ["user_id"], name: "index_products_on_user_id"
   end
@@ -132,6 +126,14 @@ ActiveRecord::Schema[7.2].define(version: 2024_09_16_081220) do
   end
 
   add_foreign_key "consumer_outlets", "consumers"
+  add_foreign_key "delivery_orders", "consumer_outlets"
+  add_foreign_key "delivery_orders", "order_groups"
+  add_foreign_key "drivers", "tenants"
+  add_foreign_key "drivers", "users"
+  add_foreign_key "line_items", "delivery_orders"
+  add_foreign_key "order_groups", "consumers"
+  add_foreign_key "order_groups", "tenants"
+  add_foreign_key "order_groups", "users"
   add_foreign_key "products", "tenants"
   add_foreign_key "products", "users"
   add_foreign_key "resources", "tenants"

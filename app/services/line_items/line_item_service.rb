@@ -1,5 +1,5 @@
 module LineItems
-  class LineItemService
+class LineItemService
     attr_reader :params, :user
     attr_accessor :line_item
 
@@ -12,19 +12,19 @@ module LineItems
       create_line_item
     end
 
-    def execute_delete_line_item(id)
-      delete_line_item(id)
+    def execute_delete_line_item
+      delete_line_item
     end
 
-    def execute_update_line_item(id)
-      update_line_item(id)
+    def execute_update_line_item
+      update_line_item
     end
 
     private
 
     def create_line_item
       begin
-        @line_item = LineItem.new(line_item_params.merge(user_id: @user.id))
+        @line_item = LineItem.new(line_item_params.merge(user_id: current_user.id, tenant_id: current_user.tenant_id))
         if @line_item.save!
           success_response(@line_item)
         else
@@ -35,8 +35,8 @@ module LineItems
       end
     end
 
-    def update_line_item(id)
-      find_line_item(id)
+    def update_line_item
+      find_line_item
 
       if @line_item.update(line_item_params)
         success_response(@line_item)
@@ -45,8 +45,8 @@ module LineItems
       end
     end
 
-    def delete_line_item(id)
-      find_line_item(id)
+    def delete_line_item
+      find_line_item
       if @line_item.destroy
         success_response(@line_item)
       else
@@ -55,10 +55,10 @@ module LineItems
     end
 
     def current_user
-      current_user ||= params[:current_user]
+      @user
     end
 
-    def find_line_item(id)
+    def find_line_item
       @line_item = LineItem.find(id)
     end
 
@@ -68,9 +68,8 @@ module LineItems
         .permit(
           :name,
           :quantity,
-          :units,
-          :status,
-          :delivery_order_id
+          :unit,
+          :status
         )
     end
 
@@ -81,5 +80,5 @@ module LineItems
     def error_response(errors)
       OpenStruct.new(success: false, line_item: nil, errors: errors)
     end
-  end
+end
 end

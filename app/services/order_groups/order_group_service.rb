@@ -8,7 +8,7 @@ module OrderGroups
       @user = user
     end
 
-    def perform_create_order_group
+    def execute_create_order_group
       create_order_group
     end
 
@@ -23,45 +23,69 @@ module OrderGroups
     private
 
     def create_order_group
+      authenticate_user!
+
       begin
-      @order_group = OrderGroup.new(order_group_params.merge(user_id: @user.id))
-      if @order_group.save!
-        success_response(@order_group)
-      else
-        error_response(@order_group.errors.full_messages)
-      end
+        @order_group = OrderGroup.new(order_group_params.merge(user_id: current_user.id, tenant_id: current_user.tenant_id))
+        if @order_group.save!
+          success_response(@order_group)
+        else
+          error_response(@order_group.errors.full_messages)
+        end
       rescue ActiveRecord::RecordInvalid => e
-      error_response([ e.message ])
+        error_response([ e.message ])
+      rescue StandardError => e
+        error_response([ e.message ])
       end
     end
 
-    def update_order_group(id)
-      find_order_group(id)
+    def delete_order_group
+      authenticate_user!
 
-      if @order_group.update(order_group_params)
-        success_response(@order_group)
-      else
-        error_response(@order_group.errors.full_messages)
+      begin
+        find_order_group(params[:id])
+
+        if @order_group.destroy
+          success_response(@order_group)
+        else
+          error_response(@order_group.errors.full_messages)
+        end
+      rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotFound => e
+        error_response([ e.message ])
+      rescue StandardError => e
+        error_response([ e.message ])
       end
     end
 
-    def delete_order_group(id)
-      find_order_group(id)
+    def update_order_group
+      authenticate_user!
 
-      if @order_group.destroy
-        success_response(@order_group)
-      else
-        error_response(@order_group.errors.full_messages)
+      begin
+        find_order_group(params[:id])
+
+        if @order_group.update(order_group_params)
+          success_response(@order_group)
+        else
+          error_response(@order_group.errors.full_messages)
+        end
+      rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotFound => e
+        error_response([ e.message ])
+      rescue StandardError => e
+        error_response([ e.message ])
       end
     end
 
     def current_user
-      current_user ||= params[:current_user]
+      @user
     end
 
+    def authenticate_user!
+      raise StandardError, "User not Authenticated." if current_user.nil?
+    end
 
     def find_order_group(id)
-      @order_group = OrderGroup.find(id)
+      @order_group = OrderGroup.find_by(id: id)
+      raise ActiveRecord::RecordNotFound, "OrderGroup not found" if @order_group.nil?
     end
 
     def order_group_params
@@ -69,20 +93,17 @@ module OrderGroups
         .require(:order_group)
         .permit(
           :status,
-          :started_at,
+          :planned_at,
           :completed_at,
           :consumer_id,
-          :tenant_id,
-          :user_id,
           delivery_order_attributes: [
             :planned_at,
             :completed_at,
             :consumer_outlet_id,
             line_items_attributes: [
-              :id,
               :name,
               :quantity,
-              :units,
+              :unit,
               :status
             ]
           ]

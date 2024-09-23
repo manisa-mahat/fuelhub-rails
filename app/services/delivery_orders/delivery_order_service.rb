@@ -1,4 +1,4 @@
-module DeliveryOrder
+module DeliveryOrders
   class DeliveryOrderService
     attr_reader :params, :user
     attr_accessor :delivery_order
@@ -8,49 +8,53 @@ module DeliveryOrder
       @user = user
     end
 
-    def create_delivery_order
-      @delivery_order = DeliveryOrder.new(delivery_order_params)
-      if @delivery_order.save
-        success_response(@delivery_order)
-      else
-        error_response(@delivery_order.errors.full_messages)
-      end
+    def execute_update_delivery_order
+      update_delivery_order
     end
 
-    def update_delivery_order(id)
-      @delivery_order = DeliveryOrder.find(id)
+    def execute_delete_delivery_order
+      delete_delivery_order
+    end
+
+    private
+
+    def update_delivery_order
+      @delivery_order = DeliveryOrder.find(params[:id])
+
       if @delivery_order.update(delivery_order_params)
         success_response(@delivery_order)
       else
         error_response(@delivery_order.errors.full_messages)
       end
+    rescue ActiveRecord::RecordNotFound => e
+      error_response([ e.message ])
     end
 
-    def delete_delivery_order(id)
-      @delivery_order = DeliveryOrder.find(id)
+    def delete_delivery_order
+      @delivery_order = DeliveryOrder.find(params[:id])
       if @delivery_order.destroy
         success_response(@delivery_order)
       else
         error_response(@delivery_order.errors.full_messages)
       end
+    rescue ActiveRecord::RecordNotFound => e
+      error_response([ e.message ])
     end
 
-    private
-
     def delivery_order_params
-      params.require(:delivery_order).permit(
-        :planned_at,
-        :completed_at,
-        :customer_outlet_id,
-        line_items_attributes: [
-          :id,
-          :name,
-          :quantity,
-          :units,
-          :status,
-          :_destroy
-        ]
-      )
+      ActionController::Parameters.new(params)
+        .require(:delivery_order)
+        .permit(
+          :planned_at,
+          :completed_at,
+          :customer_outlet_id,
+          line_items_attributes: [
+            :name,
+            :quantity,
+            :unit,
+            :status
+          ]
+        )
     end
 
     def success_response(delivery_order)

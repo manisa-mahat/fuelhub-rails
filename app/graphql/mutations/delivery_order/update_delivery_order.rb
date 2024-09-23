@@ -8,8 +8,8 @@ module Mutations
       field :errors, [ String ], null: true
 
       def resolve(id:, delivery_order_input:)
-        service = DeliveryOrder::DeliveryOrderService.new({ delivery_order: delivery_order_input.to_h }, user: context[:current_user])
-        result = service.update_delivery_order(id)
+        service = DeliveryOrders::DeliveryOrderService.new({ id: id, delivery_order: delivery_order_input.to_h }, user: context[:current_user])
+        result = service.execute_update_delivery_order
 
         if result.success
           { delivery_order: result.delivery_order, errors: [] }

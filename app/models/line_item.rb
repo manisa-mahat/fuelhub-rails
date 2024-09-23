@@ -7,5 +7,5 @@ class LineItem < ApplicationRecord
 
   # Validations
   validates :name, :quantity, :unit, :status, presence: true
-  validates :status, inclusion: { in: statuses.keys }
+  # validates :status, inclusion: { in: statuses.keys }
 end

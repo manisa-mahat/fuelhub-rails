@@ -25,18 +25,21 @@ module Types
     field :update_consumer, mutation: Mutations::Consumer::UpdateConsumer, description: "Mutation for updating a consumer"
     field :delete_consumer, mutation: Mutations::Consumer::DeleteConsumer, description: "Mutation for deleting a consumer"
 
+     # Driver Mutations
+     field :create_driver, mutation: Mutations::Driver::CreateDriver, description: "Mutation for creating a driver"
+     field :update_driver, mutation: Mutations::Driver::UpdateDriver, description: "Mutation for updating a driver"
+     field :delete_driver, mutation: Mutations::Driver::DeleteDriver, description: "Mutation for deleting a driver"
+
     # OrderGroup Mutations
     field :create_order_group, mutation: Mutations::OrderGroup::CreateOrderGroup, description: "Mutation for creating an order group"
     field :update_order_group, mutation: Mutations::OrderGroup::UpdateOrderGroup, description: "Mutation for updating an order group"
     field :delete_order_group, mutation: Mutations::OrderGroup::DeleteOrderGroup, description: "Mutation for deleting an order group"
 
     # DeliveryOrder Mutations
-    field :create_delivery_order, mutation: Mutations::DeliveryOrder::CreateDeliveryOrder, description: "Mutation for creating a delivery order"
     field :update_delivery_order, mutation: Mutations::DeliveryOrder::UpdateDeliveryOrder, description: "Mutation for updating a delivery order"
     field :delete_delivery_order, mutation: Mutations::DeliveryOrder::DeleteDeliveryOrder, description: "Mutation for deleting a delivery order"
 
     # LineItem Mutations
-    field :create_line_item, mutation: Mutations::LineItem::CreateLineItem, description: "Mutation for creating a line item"
     field :update_line_item, mutation: Mutations::LineItem::UpdateLineItem, description: "Mutation for updating a line item"
     field :delete_line_item, mutation: Mutations::LineItem::DeleteLineItem, description: "Mutation for deleting a line item"
   end

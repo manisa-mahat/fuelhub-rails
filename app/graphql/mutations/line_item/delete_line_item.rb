@@ -7,7 +7,7 @@ module Mutations
       field :errors, [ String ], null: true
 
       def resolve(id:)
-        service = LineItem::LineItemService.new({}, user: context[:current_user])
+        service = LineItems::LineItemService.new({}, user: context[:current_user])
         result = service.delete_line_item(id)
 
         {

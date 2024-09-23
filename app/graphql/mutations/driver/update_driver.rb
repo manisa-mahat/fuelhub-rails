@@ -1,4 +1,4 @@
-module Mutations 
+module Mutations
   module Driver
     class UpdateDriver < BaseMutation
       argument :id, ID, required: true

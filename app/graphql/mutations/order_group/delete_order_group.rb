@@ -7,13 +7,14 @@ module Mutations
       field :errors, [ String ], null: true
 
       def resolve(id:)
-        service = OrderGroup::OrderGroupService.new({}, user: context[:current_user])
-        result = service.delete_order_group(id)
+        service = OrderGroups::OrderGroupService.new({ id: id }, user: context[:current_user])
+        result = service.execute_delete_order_group
 
-        {
-          success: result.success,
-          errors: result.errors
-        }
+        if result.success
+          { success: true, errors: [] }
+        else
+          { success: false, errors: result.errors }
+        end
       end
     end
   end

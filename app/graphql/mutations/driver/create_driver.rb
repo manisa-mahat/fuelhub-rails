@@ -8,7 +8,7 @@ module Mutations
 
       def resolve (driver_input = {})
         service = Drivers::DriverServices.new(driver_input.to_h.merge(current_user: context[:current_user]))
-        result = service.perform_create_driver
+        result = service.execute_create_driver
           if result.success
             { driver: result.driver, errors: [] }
           else

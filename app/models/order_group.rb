@@ -1,7 +1,7 @@
 class OrderGroup < ApplicationRecord
   # Associations
   belongs_to :consumer
-  belongs_to :tenant
+  acts_as_tenant (:tenant)
   belongs_to :user
 
   has_one :delivery_order, dependent: :destroy

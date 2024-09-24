@@ -81,4 +81,16 @@ Rails.application.configure do
   config.action_mailer.default_url_options = { host: "localhost", port: 3001 }
 
   config.hosts << /.*\.ngrok-free\.app/
+
+  # config/environments/development.rb
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.smtp_settings = {
+    address:              "smtp.gmail.com", # Change if using another provider
+    port:                 587,
+    domain:               "localhost",     # Your domain
+    user_name:            "tester523832@gmail.com",
+    password:             "lelt hnto lfql xzng",
+    authentication:       "plain",
+    enable_starttls_auto: true
+  }
 end

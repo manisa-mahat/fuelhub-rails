@@ -6,7 +6,10 @@ module Resolvers
       argument :status, Types::Enums::OrderGroupEnums::OrderGroupStatusEnum, required: false
 
       def resolve(status: nil)
-        order_groups = status ? ::OrderGroup.where(status: status) : ::OrderGroup.all
+        order_groups = ::OrderGroup.all
+        order_groups = order_groups.where(status: status) if status
+        order_groups = order_groups.where(recurring: false)
+
         order_groups.map do |order_group|
           { order_group: order_group, errors: [] }
         end

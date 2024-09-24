@@ -33,5 +33,6 @@ module Types
     field :get_line_items, resolver: Resolvers::LineItem::GetLineItems, description: "Fetch multiple LineItems, optionally filtered by status"
     field :recurring_jobs, resolver: Resolvers::RecurringOrder::RecurringJobsResolver
     field :recurring_job_by_id, resolver: Resolvers::RecurringOrder::RecurringJobByIdResolver
+    field :get_child_groups, resolver: Resolvers::ChildGroup::GetChildGroupsResolver
   end
 end

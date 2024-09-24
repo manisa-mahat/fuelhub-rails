@@ -2,17 +2,23 @@ class RecurringJob
   include Sidekiq::Job
   sidekiq_options queue: "default"
 
-  def perform
-    recurring_orders = OrderGroup.where(parent_id: nil).where(recurring: true)
-
-    recurring_orders.each do |order_group|
+  def perform(order_group_id = nil)
+    if order_group_id
+      order_group = OrderGroup.find(order_group_id)
       current_time = DateTime.now
 
       if current_time.between?(order_group.start_date, order_group.end_date)
-        create_recurring_order(order_group)
-        next_occurrence = calculate_next_occurrence(current_time, order_group.frequency)
-        if next_occurrence && next_occurrence < order_group.end_date
-          RecurringJob.set(wait_until: next_occurrence).perform_async
+        create_child_group(order_group, current_time)
+        schedule_next_job(order_group, current_time)
+      end
+    else
+      recurring_orders = OrderGroup.where(recurring: true).where.not(frequency: nil)
+
+      recurring_orders.each do |order_group|
+        current_time = DateTime.now
+        if current_time.between?(order_group.start_date, order_group.end_date)
+          create_child_group(order_group, current_time)
+          schedule_next_job(order_group, current_time)
         end
       end
     end
@@ -20,29 +26,35 @@ class RecurringJob
 
   private
 
-  def create_recurring_order(order_group)
-    current_time = DateTime.now
-    next_occurrence = calculate_next_occurrence(current_time, order_group.frequency)
-    user = order_group.user
-    params = {
-      order_group: {
-        status: "pending",
-        planned_at: next_occurrence,
-        consumer_id: order_group.consumer_id,
-        parent_id: order_group.id,
-        delivery_order_attributes: order_group.delivery_order.attributes.except("id", "created_at", "updated_at"),
-        line_items_attributes: order_group.delivery_order.line_items.map do |line_item|
-          line_item.attributes.except("id", "created_at", "updated_at")
-        end
-      }
-    }
-    service = OrderGroups::OrderGroupService.new(params, user: user)
-    response = service.perform_create_order_group
+  def create_child_group(order_group, current_time)
+    delivery_order = order_group.delivery_order
 
-    if response.success?
-      puts "Created recurring order group with ID: #{response.order_group.id}"
-    else
-      raise StandardError, "Error creating recurring order group: #{response.errors.join(', ')}"
+    params = {
+      status: "pending",
+      planned_at: current_time,
+      completed_at: nil,
+      consumer_id: order_group.consumer_id,
+      user_id: order_group.user_id,
+      tenant_id: order_group.tenant_id,
+      order_group_id: order_group.id
+    }
+
+    child_group = ChildGroup.create!(params)
+
+    child_delivery_order = child_group.create_delivery_order!(delivery_order.attributes.except("id", "created_at", "updated_at"))
+
+    delivery_order.line_items.each do |line_item|
+      new_line_item_attributes = line_item.attributes.except("id", "created_at", "updated_at", "delivery_order_id")
+      child_delivery_order.line_items.create!(new_line_item_attributes)
+    end
+  end
+
+  def schedule_next_job(order_group, current_time)
+    next_occurrence = calculate_next_occurrence(current_time, order_group.frequency)
+
+    if next_occurrence && next_occurrence < order_group.end_date
+      delay_seconds = (next_occurrence - DateTime.now).to_i.seconds
+      RecurringJob.perform_in(delay_seconds, order_group.id)
     end
   end
 

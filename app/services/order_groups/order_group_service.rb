@@ -89,7 +89,7 @@ module OrderGroups
           :completed_at,
           :consumer_id,
           :recurring,
-          :parent_id,
+          :order_group_id,
           :start_date,
           :end_date,
           :frequency,
@@ -98,10 +98,11 @@ module OrderGroups
             :completed_at,
             :consumer_outlet_id,
             line_items_attributes: [
-              :name,
+              :status,
               :quantity,
-              :unit,
-              :status
+              :product,
+              :delivery_order_id,
+              :product_id
             ]
           ]
         )

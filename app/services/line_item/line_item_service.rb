@@ -20,6 +20,10 @@ module LineItems
       update_line_item(id)
     end
 
+    def fetch_line_items_by_product(product_id)
+      line_items_by_product(product_id)
+    end
+
     private
 
     def create_line_item
@@ -54,6 +58,15 @@ module LineItems
       end
     end
 
+    def line_items_by_product(product_id)
+      line_items = LineItem.where(product_id: product_id)
+      if line_items.present?
+        success_response(line_items)
+      else
+        error_response([ "No line items found for product ID #{product_id}" ])
+      end
+    end
+
     def current_user
       current_user ||= params[:current_user]
     end
@@ -66,10 +79,10 @@ module LineItems
       ActionController::Parameters.new(params)
         .require(:line_item)
         .permit(
-          :name,
-          :quantity,
-          :units,
+          :product_id,
           :status,
+          :quantity,
+          :product,
           :delivery_order_id
         )
     end

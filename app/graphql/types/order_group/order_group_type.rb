@@ -9,7 +9,7 @@ module Types
       field :delivery_order, Types::DeliveryOrder::DeliveryOrderType, null: true
       field :tenant_id, ID, null: true
       field :user_id, ID, null: true
-      field :parent_id, Integer, null: true, method: :parent_id
+      field :order_group_id, Integer, null: true, method: :id
       field :recurring, Boolean, null: true
       field :frequency, String, null: true
       field :start_date, GraphQL::Types::ISO8601DateTime, null: true

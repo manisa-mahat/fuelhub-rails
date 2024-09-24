@@ -1,16 +1,14 @@
 module Resolvers
   module LineItem
     class GetLineItems < Resolvers::BaseResolver
-      type [ Types::LineItem::LineItemResponseType ], null: true
+      type Types::LineItem::LineItemResponseType.connection_type, null: false
 
-      argument :status, Types::Enums::LineItemEnum::LineItemStatusEnum, required: false
+      # argument :status, Types::Enums::LineItemEnum::LineItemStatusEnum, required: false
 
-      def resolve(status: nil)
-        if status
-          ::LineItem.where(status: status)
-        else
-          ::LineItem.all
-        end
+      def resolve
+        ::LineItem.all
+      rescue StandardError => e
+        GraphQL::ExecutionError.new("Failed to fetch line items: #{e.message}")
       end
     end
   end

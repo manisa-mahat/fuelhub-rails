@@ -1,6 +1,7 @@
 class DeliveryOrder < ApplicationRecord
   # Associations
   belongs_to :order_group
+  belongs_to :child_group, optional: true
   belongs_to :consumer_outlet
   has_many :line_items, dependent: :destroy
 

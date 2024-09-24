@@ -2,78 +2,74 @@ class RecurringJob
   include Sidekiq::Job
   sidekiq_options queue: "default"
 
-  def perform(order_group_id)
-    order_group = OrderGroup.find(order_group_id)
+  def perform(order_group_id = nil)
+    if order_group_id
+      order_group = OrderGroup.find(order_group_id)
+      current_time = DateTime.now
 
-    if order_group.recurring && within_schedule_period?(order_group)
-      new_order_params = build_new_order_params(order_group)
-      service = OrderGroups::OrderGroupService.new(new_order_params, user: order_group.user)
-      result = service.perform_create_order_group
+      if current_time.between?(order_group.start_date, order_group.end_date)
+        create_child_group(order_group, current_time)
+        schedule_next_job(order_group, current_time)
+      end
+    else
+      recurring_orders = OrderGroup.where(recurring: true).where.not(frequency: nil)
 
-      if result.success
-        schedule_next_job(result.order_group)
+      recurring_orders.each do |order_group|
+        current_time = DateTime.now
+        if current_time.between?(order_group.start_date, order_group.end_date)
+          create_child_group(order_group, current_time)
+          schedule_next_job(order_group, current_time)
+        end
       end
     end
   end
 
   private
 
-  def within_schedule_period?(order_group)
-    current_date = Time.current.to_date
-    return false if order_group.start_date.present? && current_date < order_group.start_date
-    return false if order_group.end_date.present? && current_date > order_group.end_date
+  def create_child_group(order_group, current_time)
+    delivery_order = order_group.delivery_order
 
-    true
-  end
-
-  def build_new_order_params(order_group)
-    {
-      order_group: {
-        status: order_group.status,
-        planned_at: order_group.planned_at,
-        consumer_id: order_group.consumer_id,
-        recurring: order_group.recurring,
-        frequency: order_group.frequency,
-        start_date: order_group.start_date,
-        end_date: order_group.end_date,
-        delivery_order_attributes: order_group.delivery_order.attributes.except("id").merge(
-          line_items_attributes: order_group.delivery_order.line_items.map(&:attributes).map { |attrs| attrs.except("id") }
-        )
-      }
+    params = {
+      status: "pending",
+      planned_at: current_time,
+      completed_at: nil,
+      consumer_id: order_group.consumer_id,
+      user_id: order_group.user_id,
+      tenant_id: order_group.tenant_id,
+      order_group_id: order_group.id
     }
-  end
 
-  def schedule_next_job(order_group)
-    next_date = case order_group.frequency
-    when "daily"
-      Time.current + 1.minutes
-    when "weekly"
-      Time.current + 1.week
-    when "bi-weekly"
-      Time.current + 2.weeks
-    when "monthly"
-      Time.current + 1.month
-    else
-      nil
-    end
+    child_group = ChildGroup.create!(params)
 
-    if next_date && (!order_group.end_date || next_date.to_date <= order_group.end_date)
-      RecurringJob.perform_in((next_date - Time.current).to_i, order_group.id)
+    child_delivery_order = child_group.create_delivery_order!(delivery_order.attributes.except("id", "created_at", "updated_at"))
+
+    delivery_order.line_items.each do |line_item|
+      new_line_item_attributes = line_item.attributes.except("id", "created_at", "updated_at", "delivery_order_id")
+      child_delivery_order.line_items.create!(new_line_item_attributes)
     end
   end
 
-  def calculate_delay(frequency)
+  def schedule_next_job(order_group, current_time)
+    next_occurrence = calculate_next_occurrence(current_time, order_group.frequency)
+
+    if next_occurrence && next_occurrence < order_group.end_date
+      delay_seconds = (next_occurrence - DateTime.now).to_i.seconds
+      RecurringJob.perform_in(delay_seconds, order_group.id)
+    end
+  end
+
+  def calculate_next_occurrence(current_time, frequency)
     case frequency
     when "daily"
-      1.day
+      current_time + 1.day
     when "weekly"
-      1.week
+      current_time + 1.week
     when "bi-weekly"
-      2.weeks
+      current_time + 2.weeks
     when "monthly"
-      1.month
+      current_time + 1.month
     else
-      raise ArgumentError, "Invalid frequency"
+      raise ArgumentError, "Invalid frequency: #{frequency}"
     end
   end
 end

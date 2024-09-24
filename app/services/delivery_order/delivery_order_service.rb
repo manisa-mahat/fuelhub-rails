@@ -41,13 +41,13 @@ module DeliveryOrder
       params.require(:delivery_order).permit(
         :planned_at,
         :completed_at,
-        :customer_outlet_id,
+        :consumer_outlet_id,
         line_items_attributes: [
           :id,
-          :name,
-          :quantity,
-          :units,
+          :product_id,
           :status,
+          :quantity,
+          :product,
           :_destroy
         ]
       )

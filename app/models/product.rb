@@ -5,4 +5,5 @@ class Product < ApplicationRecord
 
   belongs_to :user
   acts_as_tenant(:tenant)
+  has_many :line_items
 end

@@ -1,5 +1,13 @@
-
 :concurrency: 5
 :queues:
   - default
   - mailers
+
+:scheduler:
+  :schedule:
+    my_cron_job:
+      cron: "* * * * *"  # This runs every day at midnight
+      class: "RecurringJob"   # Worker class to execute
+      queue: default      # Queue to run the job in
+      description: "My daily job to do something"
+   

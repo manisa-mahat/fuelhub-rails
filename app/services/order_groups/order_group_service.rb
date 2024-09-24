@@ -1,6 +1,7 @@
 module OrderGroups
   class OrderGroupService
     attr_reader :params, :user
+    attr_accessor :order_group
     attr_accessor :order_group, :consumer
 
     def initialize(params, user:)
@@ -12,8 +13,10 @@ module OrderGroups
       create_order_group
     end
 
-    def execute_delete_order_group
-      delete_order_group
+
+    def execute_delete_order_group(id, recurring: false)
+      delete_order_group(id, recurring: recurring)
+
     end
 
     def execute_update_order_group
@@ -33,7 +36,6 @@ module OrderGroups
         if @order_group.save
           # Mailer Integration
           OrderGroupMailer.create_order_mailer(@consumer, @order_group).deliver_now
-
           success_response(@order_group)
         else
           error_response(@order_group.errors.full_messages)
@@ -46,6 +48,10 @@ module OrderGroups
     end
 
     def update_order_group
+      if current_user.nil?
+        return error_response([ "User not Authenticated." ])
+      end
+
       find_order_group
 
       if @order_group.update(order_group_params)
@@ -55,16 +61,15 @@ module OrderGroups
       end
     end
 
-    def delete_order_group
-      find_order_group
+    def delete_order_group(id, recurring: false)
+      find_order_group(id)
 
-      if @order_group.destroy
-        success_response(@order_group)
-      else
-        error_response(@order_group.errors.full_messages)
+      if recurring
+        if !@order_group.recurring
+          return error_response([ "This order is not a recurring order." ])
+        end
       end
-    end
-
+   
     def current_user
       @user
     end
@@ -83,6 +88,8 @@ module OrderGroups
           :planned_at,
           :completed_at,
           :consumer_id,
+          :recurring,
+          :order_group_id,
           :start_date,
           :end_date,
           :frequency,
@@ -91,10 +98,11 @@ module OrderGroups
             :completed_at,
             :consumer_outlet_id,
             line_items_attributes: [
-              :name,
+              :status,
               :quantity,
-              :unit,
-              :status
+              :product,
+              :delivery_order_id,
+              :product_id
             ]
           ]
         )

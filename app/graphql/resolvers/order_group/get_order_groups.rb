@@ -6,13 +6,15 @@ module Resolvers
       argument :status, Types::Enums::OrderGroupEnums::OrderGroupStatusEnum, required: false
 
       def resolve(status: nil)
-        if status
-          ::OrderGroup.where(status: status)
-        else
-          ::OrderGroup.all
+        order_groups = ::OrderGroup.all
+        order_groups = order_groups.where(status: status) if status
+        order_groups = order_groups.where(recurring: false)
+
+        order_groups.map do |order_group|
+          { order_group: order_group, errors: [] }
         end
       rescue ActiveRecord::RecordNotFound => e
-        GraphQL::ExecutionError.new("OrderGroup not found: #{e.message}")
+        [ { order_group: nil, errors: [ "OrderGroup not found: #{e.message}" ] } ]
       end
     end
   end

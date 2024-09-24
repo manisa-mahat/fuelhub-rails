@@ -39,5 +39,8 @@ module Types
     field :create_line_item, mutation: Mutations::LineItem::CreateLineItem, description: "Mutation for creating a line item"
     field :update_line_item, mutation: Mutations::LineItem::UpdateLineItem, description: "Mutation for updating a line item"
     field :delete_line_item, mutation: Mutations::LineItem::DeleteLineItem, description: "Mutation for deleting a line item"
+
+    # Upload CSV Mutation
+    field :upload_csv, mutation: Mutations::Csv::ProductCsv, description: "Mutation for Uploading Product through CSV."
   end
 end

@@ -4,7 +4,15 @@ module Resolvers
       type [ Types::OrderGroup::OrderGroupType ], null: false
 
       def resolve
-        ::OrderGroup.where.not(frequency: nil).where(recurring: true)
+        tenant_id = context[:current_user]&.tenant_id
+
+        if tenant_id
+          ::OrderGroup.where(tenant_id: tenant_id)
+                                       .where.not(frequency: nil)
+                                       .where(recurring: true)
+        else
+          raise GraphQL::ExecutionError, "User is not logged in or tenant_id is missing"
+        end
       end
     end
   end

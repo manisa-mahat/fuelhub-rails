@@ -8,8 +8,8 @@ module Mutations
       field :errors, [ String ], null: true
 
       def resolve(id:, order_group_input:)
-        service = OrderGroup::OrderGroupService.new({ order_group: order_group_input.to_h }, user: context[:current_user])
-        result = service.update_order_group(id)
+        service = OrderGroups::OrderGroupService.new({ order_group: order_group_input.to_h }, user: context[:current_user])
+        result = service.execute_update_order_group(id)
 
         if result.success
           { order_group: result.order_group, errors: [] }

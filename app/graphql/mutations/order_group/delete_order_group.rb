@@ -9,7 +9,7 @@ module Mutations
 
       def resolve(id:, recurring:)
         service = OrderGroups::OrderGroupService.new({}, user: context[:current_user])
-        result = service.execute_delete_order_group(id, recurring: recurring)
+        result = service.execute_delete_order_group(id, recurring)
 
         {
           success: result.success,

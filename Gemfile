@@ -70,4 +70,3 @@ gem "sidekiq-scheduler"
 gem "logger", "1.6.0"
 
 gem "csv"
-

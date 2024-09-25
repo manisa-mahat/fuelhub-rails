@@ -47,6 +47,7 @@ module Consumers
       end
     end
 
+
     def update_consumer
       begin
 
@@ -85,6 +86,11 @@ module Consumers
 
     def consumer_params
       ActionController::Parameters.new(params).permit(:name, :tenant_id, :address, :email, :phone_number)
+    end
+
+    def current_user
+      current_user = params[:current_user]
+      @current_user ||= current_user
     end
   end
 end

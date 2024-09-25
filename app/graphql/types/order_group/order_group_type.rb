@@ -14,6 +14,7 @@ module Types
       field :frequency, String, null: true
       field :start_date, GraphQL::Types::ISO8601DateTime, null: true
       field :end_date, GraphQL::Types::ISO8601DateTime, null: true
+      field :consumer, Types::Consumer::ConsumerType, null: true
     end
   end
 end

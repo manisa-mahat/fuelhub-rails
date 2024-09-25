@@ -3,8 +3,8 @@ module Types
     class ChildGroupInput < BaseInputObject
       argument :id, ID, required: false
       argument :status, String, required: true
-      argument :planned_at, String, required: true
-      argument :completed_at, String, required: true
+      argument :planned_at, GraphQL::Types::ISO8601DateTime, required: true
+      argument :completed_at, GraphQL::Types::ISO8601DateTime, required: true
       argument :consumer_id, ID, required: false
       argument :user_id, ID, required: false
       argument :tenant_id, ID, required: false

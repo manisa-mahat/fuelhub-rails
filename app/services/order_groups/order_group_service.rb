@@ -122,10 +122,12 @@ module OrderGroups
           :start_date,
           :end_date,
           :frequency,
+          :consumer,
           delivery_order_attributes: [
             :planned_at,
             :completed_at,
             :consumer_outlet_id,
+            :consumer_outlet,
             line_items_attributes: [
               :status,
               :quantity,

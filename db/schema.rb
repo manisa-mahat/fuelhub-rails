@@ -10,8 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-
-ActiveRecord::Schema[7.2].define(version: 2024_09_19_034052) do
+ActiveRecord::Schema[7.2].define(version: 2024_09_24_073847) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -63,6 +62,19 @@ ActiveRecord::Schema[7.2].define(version: 2024_09_19_034052) do
     t.index ["child_group_id"], name: "index_delivery_orders_on_child_group_id"
     t.index ["consumer_outlet_id"], name: "index_delivery_orders_on_consumer_outlet_id"
     t.index ["order_group_id"], name: "index_delivery_orders_on_order_group_id"
+  end
+
+  create_table "drivers", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "phone", null: false
+    t.string "email", null: false
+    t.string "status"
+    t.bigint "tenant_id", null: false
+    t.bigint "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["tenant_id"], name: "index_drivers_on_tenant_id"
+    t.index ["user_id"], name: "index_drivers_on_user_id"
   end
 
   create_table "line_items", force: :cascade do |t|

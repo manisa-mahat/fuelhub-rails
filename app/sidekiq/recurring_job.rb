@@ -4,19 +4,24 @@ class RecurringJob
 
   def perform(order_group_id = nil)
     if order_group_id
+
       order_group = OrderGroup.find(order_group_id)
       current_time = DateTime.now
 
-      if current_time.between?(order_group.start_date, order_group.end_date)
+      if current_time.between?(order_group_start_date, order_group_end_date)
+
         create_child_group(order_group, current_time)
         schedule_next_job(order_group, current_time)
       end
     else
+
       recurring_orders = OrderGroup.where(recurring: true).where.not(frequency: nil)
 
       recurring_orders.each do |order_group|
         current_time = DateTime.now
-        if current_time.between?(order_group.start_date, order_group.end_date)
+        order_group_start_date = DateTime.parse(order_group.start_date.to_s)
+        order_group_end_date = DateTime.parse(order_group.end_date.to_s)
+        if current_time.between?(order_group_start_date, order_group_end_date)
           create_child_group(order_group, current_time)
           schedule_next_job(order_group, current_time)
         end
@@ -28,7 +33,6 @@ class RecurringJob
 
   def create_child_group(order_group, current_time)
     delivery_order = order_group.delivery_order
-
     params = {
       status: "pending",
       planned_at: current_time,
@@ -37,14 +41,14 @@ class RecurringJob
       user_id: order_group.user_id,
       tenant_id: order_group.tenant_id,
       order_group_id: order_group.id
+      # delivery_order_id: order_group.deliver_order_id
     }
 
     child_group = ChildGroup.create!(params)
-
     child_delivery_order = child_group.create_delivery_order!(delivery_order.attributes.except("id", "created_at", "updated_at"))
 
     delivery_order.line_items.each do |line_item|
-      new_line_item_attributes = line_item.attributes.except("id", "created_at", "updated_at", "delivery_order_id")
+      new_line_item_attributes = line_item.attributes.except("id", "created_at", "updated_at")
       child_delivery_order.line_items.create!(new_line_item_attributes)
     end
   end

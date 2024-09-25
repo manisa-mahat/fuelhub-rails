@@ -34,5 +34,6 @@ module Types
     field :recurring_jobs, resolver: Resolvers::RecurringOrder::RecurringJobsResolver
     field :recurring_job_by_id, resolver: Resolvers::RecurringOrder::RecurringJobByIdResolver
     field :get_child_groups, resolver: Resolvers::ChildGroup::GetChildGroupsResolver
+    field :get_all_orders, resolver: Resolvers::OrderGroup::GetAllOrders
   end
 end

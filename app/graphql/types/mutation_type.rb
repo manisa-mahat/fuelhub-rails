@@ -30,6 +30,10 @@ module Types
     field :update_order_group, mutation: Mutations::OrderGroup::UpdateOrderGroup, description: "Mutation for updating an order group"
     field :delete_order_group, mutation: Mutations::OrderGroup::DeleteOrderGroup, description: "Mutation for deleting an order group"
 
+    # childGroup Mutations
+    # field :update_child_group, mutation: Mutations::ChildGroup::UpdateChildGroup
+    # field :delete_child_group, mutation: Mutations::ChildGroup::DeleteChildGroup
+
     # DeliveryOrder Mutations
     field :create_delivery_order, mutation: Mutations::DeliveryOrder::CreateDeliveryOrder, description: "Mutation for creating a delivery order"
     field :update_delivery_order, mutation: Mutations::DeliveryOrder::UpdateDeliveryOrder, description: "Mutation for updating a delivery order"
@@ -42,5 +46,10 @@ module Types
 
     # Upload CSV Mutation
     field :upload_csv, mutation: Mutations::Csv::ProductCsv, description: "Mutation for Uploading Product through CSV."
+
+    # Driver Mutation
+    # field :create_driver, mutation: Mutations::Driver::CreateDriver, description: "Mutation for creating a driver"
+    # field :delete_driver, mutation: Mutations::Driver::DeleteDriver, description: "Mutation for deleting driver"
+    # field :update_driver, mutation: Mutations::Driver::UpdateDriver, description: "Mutation for updating driver"
   end
 end

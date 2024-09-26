@@ -51,7 +51,7 @@ class RecurringJob
   def calculate_next_occurrence(current_time, frequency)
     case frequency
     when "daily"
-      { "next_occurence_date" => current_time + 1.day,  "perform_in_time" => 1.day }
+      { "next_occurence_date" => current_time + 1.minutes,  "perform_in_time" => 1.minutes }
     when "weekly"
       { "next_occurence_date" => current_time + 1.weeks,  "perform_in_time" => 1.weeks }
     when "bi-weekly"

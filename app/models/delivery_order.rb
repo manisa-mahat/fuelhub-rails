@@ -5,7 +5,7 @@ class DeliveryOrder < ApplicationRecord
   belongs_to :consumer_outlet
   has_many :line_items, dependent: :destroy
   has_one :resource
-
+ 
   accepts_nested_attributes_for :line_items, allow_destroy: true, reject_if: :all_blank
 
   # Validations

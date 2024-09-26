@@ -14,7 +14,7 @@ class OrderGroupMailer < ApplicationMailer
   private
   def order_created_mail
     <<~HTML
-      <h1>Hello #{@consumer.email},</h1>
+      <h1>Hello #{@consumer.name},</h1>
       <p>Your Order Group Has Been Created, #{@consumer.email}</p>
       <p>Order Group ID: #{@order_group.id}</p>
       <p>Feel free to reach us.</p>

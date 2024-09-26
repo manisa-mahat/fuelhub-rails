@@ -31,7 +31,7 @@ module Types
     field :delete_order_group, mutation: Mutations::OrderGroup::DeleteOrderGroup, description: "Mutation for deleting an order group"
 
     # childGroup Mutations
-    # field :update_child_group, mutation: Mutations::ChildGroup::UpdateChildGroup
+    field :update_child_group, mutation: Mutations::ChildGroup::UpdateChildGroup
     # field :delete_child_group, mutation: Mutations::ChildGroup::DeleteChildGroup
 
     # DeliveryOrder Mutations

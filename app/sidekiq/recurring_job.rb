@@ -4,27 +4,14 @@ class RecurringJob
 
   def perform(order_group_id = nil)
     if order_group_id
-
       order_group = OrderGroup.find(order_group_id)
       current_time = DateTime.now
+      order_group_start_date = DateTime.parse(order_group.start_date.to_s)
+      order_group_end_date = DateTime.parse(order_group.end_date.to_s)
 
       if current_time.between?(order_group_start_date, order_group_end_date)
-
         create_child_group(order_group, current_time)
         schedule_next_job(order_group, current_time)
-      end
-    else
-
-      recurring_orders = OrderGroup.where(recurring: true).where.not(frequency: nil)
-
-      recurring_orders.each do |order_group|
-        current_time = DateTime.now
-        order_group_start_date = DateTime.parse(order_group.start_date.to_s)
-        order_group_end_date = DateTime.parse(order_group.end_date.to_s)
-        if current_time.between?(order_group_start_date, order_group_end_date)
-          create_child_group(order_group, current_time)
-          schedule_next_job(order_group, current_time)
-        end
       end
     end
   end
@@ -56,22 +43,21 @@ class RecurringJob
   def schedule_next_job(order_group, current_time)
     next_occurrence = calculate_next_occurrence(current_time, order_group.frequency)
 
-    if next_occurrence && next_occurrence < order_group.end_date
-      delay_seconds = (next_occurrence - DateTime.now).to_i.seconds
-      RecurringJob.perform_in(delay_seconds, order_group.id)
+    if next_occurrence && next_occurrence["next_occurence_date"] < order_group.end_date
+      RecurringJob.perform_in(next_occurrence["perform_in_time"], order_group.id)
     end
   end
 
   def calculate_next_occurrence(current_time, frequency)
     case frequency
     when "daily"
-      current_time + 1.day
+      { "next_occurence_date" => current_time + 1.minutes,  "perform_in_time" => 1.minutes }
     when "weekly"
-      current_time + 1.week
+      { "next_occurence_date" => current_time + 1.weeks,  "perform_in_time" => 1.weeks }
     when "bi-weekly"
-      current_time + 2.weeks
+     { "next_occurence_date" => current_time + 2.weeks,  "perform_in_time" => 2.weeks }
     when "monthly"
-      current_time + 1.month
+      { "next_occurence_date" => current_time + 1.months,  "perform_in_time" => 1.months }
     else
       raise ArgumentError, "Invalid frequency: #{frequency}"
     end

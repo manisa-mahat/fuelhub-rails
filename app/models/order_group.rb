@@ -4,7 +4,7 @@ class OrderGroup < ApplicationRecord
   acts_as_tenant(:tenant)
   belongs_to :user
   has_one :delivery_order, dependent: :destroy
-  has_many :line_items, through: :delivery_order, dependent: :destroy
+  # has_many :line_items, through: :delivery_order, dependent: :destroy
   has_many :child_groups, dependent: :destroy
 
   # Nested Attributes

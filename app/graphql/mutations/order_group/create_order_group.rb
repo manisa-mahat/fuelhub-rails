@@ -10,7 +10,6 @@ module Mutations
         service = OrderGroups::OrderGroupService.new({ order_group: order_group_input.to_h }, user: context[:current_user])
         result = service.perform_create_order_group
 
-
         if result.success
           if order_group_input.recurring
             RecurringJob.perform_async(result.order_group.id)

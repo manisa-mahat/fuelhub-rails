@@ -10,14 +10,12 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_09_24_073847) do
+ActiveRecord::Schema[7.2].define(version: 2024_09_25_165146) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "child_groups", force: :cascade do |t|
     t.string "status"
-    t.string "planned_at"
-    t.string "completed_at"
     t.bigint "consumer_id", null: false
     t.bigint "user_id", null: false
     t.bigint "tenant_id", null: false
@@ -25,6 +23,8 @@ ActiveRecord::Schema[7.2].define(version: 2024_09_24_073847) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "delivery_order_id"
+    t.datetime "planned_at"
+    t.datetime "completed_at"
     t.index ["consumer_id"], name: "index_child_groups_on_consumer_id"
     t.index ["delivery_order_id"], name: "index_child_groups_on_delivery_order_id"
     t.index ["order_group_id"], name: "index_child_groups_on_order_group_id"
@@ -52,16 +52,18 @@ ActiveRecord::Schema[7.2].define(version: 2024_09_24_073847) do
   end
 
   create_table "delivery_orders", force: :cascade do |t|
-    t.string "planned_at"
-    t.string "completed_at"
     t.bigint "consumer_outlet_id", null: false
     t.bigint "order_group_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "child_group_id"
+    t.bigint "resource_id"
+    t.datetime "planned_at"
+    t.datetime "completed_at"
     t.index ["child_group_id"], name: "index_delivery_orders_on_child_group_id"
     t.index ["consumer_outlet_id"], name: "index_delivery_orders_on_consumer_outlet_id"
     t.index ["order_group_id"], name: "index_delivery_orders_on_order_group_id"
+    t.index ["resource_id"], name: "index_delivery_orders_on_resource_id"
   end
 
   create_table "drivers", force: :cascade do |t|
@@ -90,8 +92,6 @@ ActiveRecord::Schema[7.2].define(version: 2024_09_24_073847) do
 
   create_table "order_groups", force: :cascade do |t|
     t.string "status"
-    t.string "planned_at"
-    t.string "completed_at"
     t.bigint "consumer_id", null: false
     t.bigint "user_id", null: false
     t.bigint "tenant_id", null: false
@@ -101,6 +101,8 @@ ActiveRecord::Schema[7.2].define(version: 2024_09_24_073847) do
     t.datetime "start_date"
     t.datetime "end_date"
     t.boolean "recurring"
+    t.datetime "planned_at"
+    t.datetime "completed_at"
     t.index ["consumer_id"], name: "index_order_groups_on_consumer_id"
     t.index ["tenant_id"], name: "index_order_groups_on_tenant_id"
     t.index ["user_id"], name: "index_order_groups_on_user_id"
@@ -157,6 +159,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_09_24_073847) do
   add_foreign_key "delivery_orders", "child_groups", on_delete: :cascade
   add_foreign_key "delivery_orders", "consumer_outlets"
   add_foreign_key "delivery_orders", "order_groups", on_delete: :cascade
+  add_foreign_key "delivery_orders", "resources"
   add_foreign_key "line_items", "delivery_orders", on_delete: :cascade
   add_foreign_key "order_groups", "consumers", on_delete: :cascade
   add_foreign_key "order_groups", "tenants"

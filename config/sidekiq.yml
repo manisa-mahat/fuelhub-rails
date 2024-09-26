@@ -6,8 +6,8 @@
 :scheduler:
   :schedule:
     my_cron_job:
-      cron: "* * * * *"  # This runs every day at midnight
-      class: "RecurringJob"   # Worker class to execute
-      queue: default      # Queue to run the job in
+      cron: "* * * * *" 
+      class: "RecurringJob"  
+      queue: default     
       description: "My daily job to do something"
    

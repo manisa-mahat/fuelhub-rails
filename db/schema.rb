@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_09_24_073847) do
+ActiveRecord::Schema[7.2].define(version: 2024_09_24_095329) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -88,6 +88,15 @@ ActiveRecord::Schema[7.2].define(version: 2024_09_24_073847) do
     t.index ["product_id"], name: "index_line_items_on_product_id"
   end
 
+  create_table "line_items_products", force: :cascade do |t|
+    t.bigint "line_item_id", null: false
+    t.bigint "product_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["line_item_id"], name: "index_line_items_products_on_line_item_id"
+    t.index ["product_id"], name: "index_line_items_products_on_product_id"
+  end
+
   create_table "order_groups", force: :cascade do |t|
     t.string "status"
     t.string "planned_at"
@@ -113,8 +122,8 @@ ActiveRecord::Schema[7.2].define(version: 2024_09_24_073847) do
     t.string "name"
     t.string "status"
     t.string "unit"
-    t.bigint "tenant_id"
-    t.bigint "user_id"
+    t.bigint "tenant_id", null: false
+    t.bigint "user_id", null: false
     t.index ["tenant_id"], name: "index_products_on_tenant_id"
     t.index ["user_id"], name: "index_products_on_user_id"
   end
@@ -158,6 +167,8 @@ ActiveRecord::Schema[7.2].define(version: 2024_09_24_073847) do
   add_foreign_key "delivery_orders", "consumer_outlets"
   add_foreign_key "delivery_orders", "order_groups", on_delete: :cascade
   add_foreign_key "line_items", "delivery_orders", on_delete: :cascade
+  add_foreign_key "line_items_products", "line_items"
+  add_foreign_key "line_items_products", "products"
   add_foreign_key "order_groups", "consumers", on_delete: :cascade
   add_foreign_key "order_groups", "tenants"
   add_foreign_key "order_groups", "users"

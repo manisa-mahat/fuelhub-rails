@@ -8,13 +8,14 @@ module Mutations
         user = context[:current_user]
 
         if user
+
           if user.jti == "logged out"
             {
               success: false,
               message: "User is already logged out"
             }
           else
-            if user.update(jti: "logged out")
+            if user.update(jti: SecureRandom.uuid)
               {
                 success: true,
                 message: "User successfully logged out"

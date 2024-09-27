@@ -108,6 +108,12 @@ ActiveRecord::Schema[7.2].define(version: 2024_09_25_165146) do
     t.index ["user_id"], name: "index_order_groups_on_user_id"
   end
 
+  create_table "organizations", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "products", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -115,8 +121,8 @@ ActiveRecord::Schema[7.2].define(version: 2024_09_25_165146) do
     t.string "name"
     t.string "status"
     t.string "unit"
-    t.bigint "tenant_id"
-    t.bigint "user_id"
+    t.bigint "tenant_id", null: false
+    t.bigint "user_id", null: false
     t.index ["tenant_id"], name: "index_products_on_tenant_id"
     t.index ["user_id"], name: "index_products_on_user_id"
   end

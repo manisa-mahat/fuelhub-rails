@@ -114,10 +114,11 @@ Your Docker setup will execute this project within the devcontainer environment.
 Share the ngrok link with the frontend, ensuring it includes the ngrok forwarding address. The project is ready—run it locally and enjoy discovering this masterpiece!
 
 ## Support
-For support contact, email @ sandeshbist36@gmail.com
-email @ sushilawasthi22@gmail.com
-email @ mahatmanisha1555@gmail.com
-email @ manjubhandariabcd@gmail.com
+For support contact, email
+- email @ sandeshbist36@gmail.com
+- email @ sushilawasthi22@gmail.com
+- email @ mahatmanisha1555@gmail.com
+- email @ manjubhandariabcd@gmail.com
 
 ## Thank You!
 

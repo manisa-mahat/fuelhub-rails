@@ -70,3 +70,4 @@ gem "sidekiq-scheduler"
 gem "logger", "1.6.0"
 
 gem "csv"
+gem "apollo_upload_server", "~> 2.0"

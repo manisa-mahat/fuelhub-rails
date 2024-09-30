@@ -67,7 +67,7 @@ gem "devise-jwt"
 gem "sidekiq", "~> 7.3"
 gem "sidekiq-scheduler"
 
-gem "logger", "1.6.0"
+gem "logger", "1.6.1"
 
 gem "csv"
 gem "apollo_upload_server", "~> 2.0"

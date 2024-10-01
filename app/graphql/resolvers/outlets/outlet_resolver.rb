@@ -5,7 +5,8 @@ module Resolvers
       argument :id, ID, required: true
 
       def resolve(id:)
-        outlet_service = ::Outlets::ConsumerOutletService.new({ id: id }).execute_get_outlet
+        current_user = context[:current_user]
+        outlet_service = ::Outlets::ConsumerOutletService.new({ id: id, current_user: current_user }).execute_get_outlet
         if outlet_service.success?
           {
             consumer_outlets: outlet_service.outlets,

@@ -8,7 +8,7 @@ module Mutations
       field :errors, [ String ], null: false
 
       def resolve(outlet_details: {})
-        outlet_service = ::Outlets::ConsumerOutletService.new(outlet_details.to_h).update_consumer_outlet
+          outlet_service = ::Outlets::ConsumerOutletService.new(outlet_details.to_h.merge(current_user: context[:current_user])).update_consumer_outlet
 
         if outlet_service.success?
           {

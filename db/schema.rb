@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_09_30_042221) do
+ActiveRecord::Schema[7.2].define(version: 2024_09_30_090017) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -38,7 +38,11 @@ ActiveRecord::Schema[7.2].define(version: 2024_09_30_042221) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "consumer_id", null: false
+    t.bigint "tenant_id", null: false
+    t.bigint "user_id", null: false
     t.index ["consumer_id"], name: "index_consumer_outlets_on_consumer_id"
+    t.index ["tenant_id"], name: "index_consumer_outlets_on_tenant_id"
+    t.index ["user_id"], name: "index_consumer_outlets_on_user_id"
   end
 
   create_table "consumers", force: :cascade do |t|
@@ -166,6 +170,8 @@ ActiveRecord::Schema[7.2].define(version: 2024_09_30_042221) do
   add_foreign_key "child_groups", "delivery_orders"
   add_foreign_key "child_groups", "order_groups", on_delete: :cascade
   add_foreign_key "consumer_outlets", "consumers", on_delete: :cascade
+  add_foreign_key "consumer_outlets", "tenants"
+  add_foreign_key "consumer_outlets", "users"
   add_foreign_key "delivery_orders", "child_groups", on_delete: :cascade
   add_foreign_key "delivery_orders", "consumer_outlets"
   add_foreign_key "delivery_orders", "order_groups", on_delete: :cascade

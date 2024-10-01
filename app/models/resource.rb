@@ -2,7 +2,7 @@ class Resource < ApplicationRecord
   # Associations
   belongs_to :user
   acts_as_tenant(:tenant)
-  has_many :delivery_orders
+  # has_many :delivery_orders
 
   # Enums for asset category and status
   include Resources::ResourceCategoryEnum

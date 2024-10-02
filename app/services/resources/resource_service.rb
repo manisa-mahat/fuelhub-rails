@@ -40,7 +40,7 @@ module Resources
       end
     rescue ActiveRecord::RecordNotFound => e
       error_response([ e.message ])
-    rescue ActiveRecord::RecordNotCreated => e
+    rescue ActiveRecord::RecordInvalid => e
       error_response([ e.message ])
     rescue StandardError => e
       error_response([ e.message ])
@@ -59,7 +59,7 @@ module Resources
       end
     rescue ActiveRecord::RecordNotFound => e
       error_response([ e.message ])
-    rescue ActiveRecord::RecordNotDestroyed => e
+    rescue ActiveRecord::RecordInvalid => e
       error_response([ e.message ])
     rescue StandardError => e
       error_response([ e.message ])
@@ -80,7 +80,7 @@ module Resources
       end
     rescue ActiveRecord::RecordNotFound => e
       error_response([ e.message ])
-    rescue ActiveRecord::RecordNotDestroyed => e
+    rescue ActiveRecord::RecordInvalid => e
       error_response([ e.message ])
     rescue StandardError => e
       error_response([ e.message ])

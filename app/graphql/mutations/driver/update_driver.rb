@@ -1,4 +1,4 @@
-module Mutations 
+module Mutations
   module Driver
     class UpdateDriver < BaseMutation
       argument :id, ID, required: true
@@ -8,13 +8,13 @@ module Mutations
       field :errors, [ String ], null: false
 
       def resolve(id:, driver:)
-        service = Drivers::DriverServices.new(params: driver.to_h.merge(id: id), current_user: context[:current_user])
-        service.execute_update_driver
-
-        {
-          driver: service.success? ? service.driver : nil,
-          errors: service.errors
+        params = {
+          id: id,
+          driver: driver.to_h,
+          current_user: context[:current_user]
         }
+        service = Drivers::DriverServices.new(params)
+        service.execute_update_driver
       end
     end
   end

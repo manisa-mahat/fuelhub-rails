@@ -1,7 +1,6 @@
 module OrderGroups
   class OrderGroupService
     attr_reader :params, :user
-    attr_accessor :order_group
     attr_accessor :order_group, :consumer
 
     def initialize(params, user:)
@@ -23,58 +22,59 @@ module OrderGroups
 
     private
 
-  def create_order_group
-    begin
-      if current_user.present?
-        ActsAsTenant.with_tenant(current_user.tenant) do
-          @consumer = Consumer.find(order_group_params[:consumer_id])
-          @order_group = OrderGroup.new(order_group_params.merge(user_id: current_user.id, tenant_id: current_user.tenant_id))
-          if @order_group.save!
-            # Mailer Integration
+    def create_order_group
+      return error_response([ "User not authenticated." ]) unless current_user.present?
 
-            OrderGroupMailer.create_order_mailer(@consumer, @order_group).deliver_now
-            success_response(@order_group)
-          else
-              error_response(@order_group.errors.full_messages)
-          end
+        ActsAsTenant.with_tenant(current_user.tenant) do
+        @consumer = Consumer.find(order_group_params[:consumer_id])
+        tenant_id =current_user.tenant_id
+        @order_group = OrderGroup.new(order_group_params.merge(user_id: current_user.id, tenant_id: tenant_id))
+
+        if @order_group.save
+          # Mailer Integration
+          OrderGroupMailer.create_order_mailer(@consumer, @order_group).deliver_now
+          success_response(@order_group)
+        else
+          error_response(@order_group.errors.full_messages)
         end
-      else
-        error_response([ "User not authenticated." ])
       end
     rescue ActiveRecord::RecordInvalid => e
-    error_response([ e.message ])
+      error_response([ e.message ])
     rescue StandardError => e
-    error_response([ e.message ])
-    end
-  end
-
-  def update_order_group(id)
-    if current_user.nil?
-      return error_response([ "User not Authenticated." ])
+      error_response([ e.message ])
     end
 
-    find_order_group(id)
+    def update_order_group(id)
+      return error_response([ "User not authenticated." ]) if current_user.nil?
 
-    if @order_group.update(order_group_params)
-      success_response(@order_group)
-    else
-      error_response(@order_group.errors.full_messages)
-    end
-  end
+      ActsAsTenant.with_tenant(current_user.tenant) do
+        find_order_group(id)
 
-  def delete_order_group(id, recurring)
-    find_order_group(id)
-
-    if @order_group.recurring != recurring
-      return error_response([ "The recurring status does not match for this order." ])
+        if @order_group.update(order_group_params)
+          success_response(@order_group)
+        else
+          error_response(@order_group.errors.full_messages)
+        end
+      end
     end
 
-    if @order_group.destroy
-      success_response(@order_group)
-    else
-      error_response(@order_group.errors.full_messages)
+    def delete_order_group(id, recurring)
+      return error_response([ "User not authenticated." ]) if current_user.nil?
+
+      ActsAsTenant.with_tenant(current_user.tenant) do
+        find_order_group(id)
+
+        if @order_group.recurring != recurring
+          return error_response([ "The recurring status does not match for this order." ])
+        end
+
+        if @order_group.destroy
+          success_response(@order_group)
+        else
+          error_response(@order_group.errors.full_messages)
+        end
+      end
     end
-  end
 
     def current_user
       @user
@@ -93,21 +93,17 @@ module OrderGroups
           :completed_at,
           :consumer_id,
           :recurring,
-          :order_group_id,
           :start_date,
           :end_date,
           :frequency,
-          :consumer,
+          :parent_order_id,
           delivery_order_attributes: [
             :planned_at,
             :completed_at,
             :consumer_outlet_id,
-            :consumer_outlet,
             line_items_attributes: [
               :status,
               :quantity,
-              :product,
-              :delivery_order_id,
               :product_id
             ]
           ]

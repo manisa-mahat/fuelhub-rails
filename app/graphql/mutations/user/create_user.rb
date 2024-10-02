@@ -1,7 +1,6 @@
 module Mutations
   module User
     class CreateUser < BaseMutation
-      null true
       argument :email, String
       argument :password, String
       argument :password_confirmation, String
@@ -11,7 +10,16 @@ module Mutations
       field :errors, [ String ], null: false
 
       def resolve(email:, password:, password_confirmation:, tenant_id:)
-        user = ::User.create(email: email, password: password, password_confirmation: password_confirmation, tenant_id: tenant_id)
+        existing_user = ::User.find_by(email: email)
+        if existing_user
+          return {
+            user: nil,
+            errors: [ "User with email #{email} is already registered" ]
+          }
+        end
+
+        user = ::User.new(email: email, password: password, password_confirmation: password_confirmation, tenant_id: tenant_id)
+
         if user.save
           {
             user: user,

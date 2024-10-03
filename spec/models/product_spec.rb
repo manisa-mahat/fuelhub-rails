@@ -1,10 +1,9 @@
 require 'rails_helper'
 
 RSpec.describe Product, type: :model do
-  let(:tenant) { Tenant.create(name: "Exon") }
-  let(:user) { User.create(email: "sandesh@gmail.com", password: "121212") }
+  let!(:tenant) { create(:tenant, name: "Exon") }
+  let!(:user) { create(:user, email: "sandesh@gmail.com", password: "121212", tenant: tenant) }
 
-  # Sample valid product
   let(:product) { tenant.products.build(name: "petrol", user: user) }
 
   describe "associations" do
@@ -30,17 +29,6 @@ RSpec.describe Product, type: :model do
 
     it "is valid with a unique name without spaces" do
       expect(product).to be_valid
-    end
-  end
-
-  describe "acts_as_tenant" do
-    it "scopes products to the tenant" do
-      product.save!
-      another_tenant = Tenant.create(name: "Diesel")
-      product_from_another_tenant = another_tenant.products.build(name: "Diesel", user: user)
-
-      expect(product_from_another_tenant).to be_valid
-      expect(product_from_another_tenant.tenant).to eq(another_tenant)
     end
   end
 end

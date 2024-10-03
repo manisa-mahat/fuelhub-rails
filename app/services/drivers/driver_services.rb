@@ -4,7 +4,7 @@ module Drivers
     attr_accessor :driver
 
     def initialize (params = {})
-      @params = params
+      @params = ActionController::Parameters.new(params)
       @user = params[:current_user]
     end
 
@@ -23,42 +23,48 @@ module Drivers
     private
 
     def create_driver
-      begin
-      @driver = Driver.new(driver_params.merge(user_id: current_user.id))
-      if @driver.save
-        success_response(@driver)
-      else
-        error_response(@driver.errors.full_messages)
+      return error_response([ "User not authenticated." ]) unless current_user.present?
+
+      ActsAsTenant.with_tenant(current_user.tenant) do
+        @driver = Driver.new(driver_params.merge(user_id: current_user.id))
+        if @driver.save
+          success_response(@driver)
+        else
+          error_response(@driver.errors.full_messages)
+        end
       end
-      rescue ActiveRecord::RecordInvalid => e
-      error_response([ e.message ])
-      end
+    rescue ActiveRecord::RecordInvalid => e
+    error_response([ e.message ])
     end
 
     def update_driver
-      begin
-      @driver = find_driver
-      if @driver.update(driver_params)
-        success_response(@driver)
-      else
-        error_response(@driver.errors.full_messages)
+      return error_response([ "User not authenticated." ]) unless current_user.present?
+
+      ActsAsTenant.with_tenant(current_user.tenant) do
+        @driver = find_driver
+        if @driver.update(driver_params)
+          success_response(@driver)
+        else
+          error_response(@driver.errors.full_messages)
+        end
       end
-      rescue ActiveRecord::RecordNotFound => e
-      error_response([ e.message ])
-      end
+    rescue ActiveRecord::RecordNotFound => e
+    error_response([ e.message ])
     end
 
     def delete_driver
-      begin
-      @driver = find_driver
-      if @driver.destroy
-        success_response(@driver)
-      else
-        error_response(@driver.errors.full_messages)
+      return error_response([ "User not authenticated." ]) unless current_user.present?
+
+      ActsAsTenant.with_tenant(current_user.tenant) do
+        @driver = find_driver
+        if @driver.destroy
+          success_response(@driver)
+        else
+          error_response(@driver.errors.full_messages)
+        end
       end
-      rescue ActiveRecord::RecordNotFound => e
-      error_response([ e.message ])
-      end
+    rescue ActiveRecord::RecordNotFound => e
+    error_response([ e.message ])
     end
 
     def current_user
@@ -70,7 +76,7 @@ module Drivers
     end
 
     def driver_params
-      params.permit(:name, :phone, :email, :status, :tenant_id)
+       params.require(:driver).permit(:name, :phone, :email, :status, :license_number)
     end
 
     def success_response(driver)

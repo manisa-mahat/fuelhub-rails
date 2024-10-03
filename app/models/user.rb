@@ -6,4 +6,5 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :validatable, :jwt_authenticatable,
          jwt_revocation_strategy: self
   acts_as_tenant(:tenant)
+  belongs_to :tenant
 end

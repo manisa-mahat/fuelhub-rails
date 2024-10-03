@@ -1,14 +1,18 @@
 module Resolvers
   module LineItem
     class GetLineItems < Resolvers::BaseResolver
-      type Types::LineItem::LineItemResponseType.connection_type, null: false
-
-      # argument :status, Types::Enums::LineItemEnum::LineItemStatusEnum, required: false
+      type [ Types::LineItem::LineItemResponseType ], null: false
 
       def resolve
-        ::LineItem.all
-      rescue StandardError => e
-        GraphQL::ExecutionError.new("Failed to fetch line items: #{e.message}")
+        user = context[:current_user]
+
+        if user
+          line_items = ::LineItem.joins(delivery_order: :order_group)
+                                 .where(order_groups: { user_id: user.id })
+          line_items
+        else
+          raise GraphQL::ExecutionError, "Authentication required"
+        end
       end
     end
   end

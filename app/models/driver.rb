@@ -1,10 +1,10 @@
 class Driver < ApplicationRecord
   # Associations
-  belongs_to :tenant
+  acts_as_tenant(:tenant)
   belongs_to :user
 
   # Enums
-  include Drivers::DriverStatusEnum
+  include Drivers::StatusEnum
 
   # Validations
   validates :name, presence: true

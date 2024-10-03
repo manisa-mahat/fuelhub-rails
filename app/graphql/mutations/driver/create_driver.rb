@@ -6,14 +6,14 @@ module Mutations
       field :driver, Types::Driver::DriverType, null: true
       field :errors, [ String ], null: true
 
-      def resolve (driver_input = {})
+      def resolve (driver_input:)
         service = Drivers::DriverServices.new(driver_input.to_h.merge(current_user: context[:current_user]))
         result = service.perform_create_driver
-          if result.success
-            { driver: result.driver, errors: [] }
-          else
-            { driver: nil, errors: result.errors }
-          end
+        if result.success
+          { driver: result.driver, errors: [] }
+        else
+          { driver: nil, errors: result.errors }
+        end
       end
     end
   end

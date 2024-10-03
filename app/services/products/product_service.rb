@@ -1,4 +1,3 @@
-
 module Products
   class ProductService
     attr_reader :params
@@ -9,7 +8,6 @@ module Products
     @success = false
     @errors = []
     end
-
 
     def execute_create_product
       create_product
@@ -38,7 +36,6 @@ module Products
     private
     def get_products
       begin
-        # Fetch products where tenant_id matches the current_user's tenant_id
         @products = Product.where(tenant_id: current_user.tenant_id).order(created_at: :DESC)
 
         @success = true

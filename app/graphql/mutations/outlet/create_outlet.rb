@@ -9,7 +9,7 @@ module Mutations
 
       def resolve(outlet_details: {})
         begin
-          outlet_service = ::Outlets::ConsumerOutletService.new(outlet_details.to_h).create_consumer_outlet
+          outlet_service = ::Outlets::ConsumerOutletService.new(outlet_details.to_h.merge(current_user: context[:current_user])).create_consumer_outlet
           if outlet_service.success?
             {
               outlet: outlet_service.outlet,

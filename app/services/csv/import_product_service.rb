@@ -41,6 +41,7 @@ module Csv
           end
         end
       end
+
       { success_count: @success_count, errors: @errors }
     end
   end

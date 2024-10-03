@@ -40,8 +40,7 @@ module Resources
       end
     rescue ActiveRecord::RecordNotFound => e
       error_response([ e.message ])
-    rescue ActiveRecord::RecordInvalid => e
-      error_response([ e.message ])
+
     rescue StandardError => e
       error_response([ e.message ])
     end
@@ -108,7 +107,7 @@ module Resources
     end
 
     def resource_params
-      ActionController::Parameters.new(params).permit(:resource_category, :resource_status)
+      ActionController::Parameters.new(params).permit(:resource_category, :resource_status, :name, :capacity, :unit, :vehicle_id)
     end
 
     def success_response(resource)

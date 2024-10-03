@@ -35,5 +35,7 @@ module FuelHub
 
     config.active_job.queue_adapter = :sidekiq
     config.autoload_paths += %W[#{config.root}/sidekiq]
+
+    Rails.application.config.middleware.use ApolloUploadServer::Middleware
   end
 end

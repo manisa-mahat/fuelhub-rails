@@ -1,6 +1,6 @@
 module Resolvers
   module RecurringOrder
-    class RecurringJobsResolver < GraphQL::Schema::Resolver
+    class RecurringJobParentResolver < GraphQL::Schema::Resolver
       type [ Types::OrderGroup::OrderGroupType ], null: false
 
       def resolve
@@ -8,9 +8,11 @@ module Resolvers
 
         if tenant_id
           ::OrderGroup.where(tenant_id: tenant_id)
-                                       .where.not(frequency: nil)
-                                       .where.not(parent_order_id: nil)
-                                       .where(recurring: true)
+                      .where(recurring: true)
+                      .where(parent_order_id: nil)
+                      .where.not(frequency: nil)
+                      .where.not(start_date: nil)
+                      .where.not(end_date: nil)
         else
           raise GraphQL::ExecutionError, "User is not logged in"
         end

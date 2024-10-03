@@ -7,7 +7,7 @@ module Mutations
       field :errors, [ String ], null: true
 
       def resolve(order_group_input:)
-        service = OrderGroups::OrderGroupService.new({ order_group: order_group_input.to_h }, user: context[:current_user])
+        service = ::OrderGroups::OrderGroupService.new({ order_group: order_group_input.to_h }, user: context[:current_user])
         result = service.perform_create_order_group
 
         if result.success

@@ -1,10 +1,10 @@
 module Drivers
-  module DriverStatusEnum
+  module StatusEnum
     extend ActiveSupport::Concern
 
     STATUS = {
-      active: "Active",
-      inactive: "Inactive"
+      active: "ACTIVE",
+      inactive: "INACTIVE"
     }.freeze
 
     included do

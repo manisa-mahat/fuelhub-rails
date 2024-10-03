@@ -11,14 +11,24 @@ module Mutations
 
       def resolve(email:, password:, tenant_id:)
         user = ::User.find_by(email: email)
-        if user && user.valid_password?(password) && valid_tenant?(user, tenant_id)
-          jti = SecureRandom.uuid
-          user.update!(jti: jti)
-          token = JWT.encode({ user_id: user.id, exp: 1.hour.from_now.to_i }, "secret", "HS256")
-          { token: token, message: "Logged IN", user: user }
-        else
-          raise GraphQL::ExecutionError, "Invalid email or password or tenant"
+
+        if user.nil?
+          raise GraphQL::ExecutionError, "Invalid email"
         end
+
+        unless user.valid_password?(password)
+          raise GraphQL::ExecutionError, "Invalid password"
+        end
+
+        unless valid_tenant?(user, tenant_id)
+          raise GraphQL::ExecutionError, "Invalid tenant"
+        end
+
+        jti = SecureRandom.uuid
+        user.update!(jti: jti)
+        token = JWT.encode({ user_id: user.id, exp: 1.hour.from_now.to_i }, "secret", "HS256")
+
+        { token: token, message: "Logged IN", user: user }
       end
 
       def valid_tenant?(user, tenant_id)

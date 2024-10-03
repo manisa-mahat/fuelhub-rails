@@ -1,13 +1,13 @@
-:concurrency: 5
-:queues:
-  - default
-  - mailers
+# :concurrency: 5
+# :queues:
+#   - default
+#   - mailers
 
-:scheduler:
-  :schedule:
-    my_cron_job:
-      cron: "* * * * *" 
-      class: "RecurringJob"  
-      queue: default     
-      description: "My daily job to do something"
+# :scheduler:
+#   :schedule:
+#     my_cron_job:
+#       # cron: "* * * * *" 
+#       class: "RecurringJob"  
+#       queue: default     
+#       description: "My daily job to do something"
    

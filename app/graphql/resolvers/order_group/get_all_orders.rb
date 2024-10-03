@@ -9,7 +9,7 @@ module Resolvers
           order_groups = ::OrderGroup.where(tenant_id: tenant_id)
           { order_groups: order_groups, errors: [] }
         else
-          raise GraphQL::ExecutionError, "User is not logged in or tenant_id is missing"
+          raise GraphQL::ExecutionError, "User is not logged in"
         end
       end
     end
